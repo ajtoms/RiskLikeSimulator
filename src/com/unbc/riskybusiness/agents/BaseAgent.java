@@ -11,9 +11,11 @@ import com.unbc.riskybusiness.controllers.Game;
  */
 public class BaseAgent implements Agent{
 
+    private Game gameInstance;
+    
     @Override
     public void setGame(Game g) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        this.gameInstance = g;
     }
     
     @Override
