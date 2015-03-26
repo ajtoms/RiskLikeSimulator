@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/leefoster/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-box2d/1.5.4/6b0e1e0ef1b4ee3010f4e55cceaa22ba9ace5cf2/gdx-box2d-1.5.4.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="6b0e1e0ef1b4ee3010f4e55cceaa22ba9ace5cf2">
+        <dex dex="/Users/leefoster/Development/CPSC 495/RiskLikeSimulator/android/build/intermediates/pre-dexed/debug/gdx-box2d-1.5.4-647f425826b5253deddab3bfbde6bc5952ea619c.jar" />
+    </item>
+    <item
+        jar="/Users/leefoster/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.5.4/c16e1a0088ae7f0cac4a8d6595be32432e6069f4/gdx-1.5.4.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="c16e1a0088ae7f0cac4a8d6595be32432e6069f4">
+        <dex dex="/Users/leefoster/Development/CPSC 495/RiskLikeSimulator/android/build/intermediates/pre-dexed/debug/gdx-1.5.4-b238cca874a0b1be531414fbf361c82c39c277d5.jar" />
+    </item>
+    <item
+        jar="/Users/leefoster/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-backend-android/1.5.4/7b974b501dc92361698a1f6251f9e7b308582c08/gdx-backend-android-1.5.4.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="7b974b501dc92361698a1f6251f9e7b308582c08">
+        <dex dex="/Users/leefoster/Development/CPSC 495/RiskLikeSimulator/android/build/intermediates/pre-dexed/debug/gdx-backend-android-1.5.4-ca9ec1639e45af21f4a3b634d8b05657b5a38076.jar" />
+    </item>
+    <item
+        jar="/Users/leefoster/Development/CPSC 495/RiskLikeSimulator/core/build/libs/core-1.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="a74ce6a130117693d4821001d61c8d5d85443182">
+        <dex dex="/Users/leefoster/Development/CPSC 495/RiskLikeSimulator/android/build/intermediates/pre-dexed/debug/core-1.0-d9fec85da75b348e4c8f7263beb59a710fe87907.jar" />
+    </item>
+    <item
+        jar="/Users/leefoster/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-freetype/1.5.4/907d182cd9d32e9d77834baf1ae0d91abc2e0a0a/gdx-freetype-1.5.4.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="907d182cd9d32e9d77834baf1ae0d91abc2e0a0a">
+        <dex dex="/Users/leefoster/Development/CPSC 495/RiskLikeSimulator/android/build/intermediates/pre-dexed/debug/gdx-freetype-1.5.4-cad0a82ec72bb4fa3a9ecd2534b9774239edf76c.jar" />
+    </item>
+
+</items>

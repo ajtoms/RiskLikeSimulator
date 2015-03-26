@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-up" width="32" height="32" tilewidth="32" tileheight="32" nextobjectid="50">
+ <tileset firstgid="1" name="Islands" tilewidth="64" tileheight="64">
+  <tile id="0">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile000.png"/>
+  </tile>
+  <tile id="1">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile001.png"/>
+  </tile>
+  <tile id="2">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile002.png"/>
+  </tile>
+  <tile id="3">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile003.png"/>
+  </tile>
+  <tile id="4">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile004.png"/>
+  </tile>
+  <tile id="5">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile005.png"/>
+  </tile>
+  <tile id="6">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile006.png"/>
+  </tile>
+  <tile id="7">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile007.png"/>
+  </tile>
+  <tile id="8">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile008.png"/>
+  </tile>
+  <tile id="9">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile009.png"/>
+  </tile>
+  <tile id="10">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile010.png"/>
+  </tile>
+  <tile id="11">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile011.png"/>
+  </tile>
+  <tile id="12">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile012.png"/>
+  </tile>
+  <tile id="13">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile013.png"/>
+  </tile>
+  <tile id="14">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile014.png"/>
+  </tile>
+  <tile id="15">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile018.png"/>
+  </tile>
+  <tile id="16">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile019.png"/>
+  </tile>
+  <tile id="17">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile020.png"/>
+  </tile>
+  <tile id="18">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile021.png"/>
+  </tile>
+  <tile id="19">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile022.png"/>
+  </tile>
+  <tile id="20">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile023.png"/>
+  </tile>
+  <tile id="21">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile024.png"/>
+  </tile>
+  <tile id="22">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile025.png"/>
+  </tile>
+  <tile id="23">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile026.png"/>
+  </tile>
+  <tile id="24">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile027.png"/>
+  </tile>
+  <tile id="25">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile028.png"/>
+  </tile>
+  <tile id="26">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile029.png"/>
+  </tile>
+  <tile id="27">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile030.png"/>
+  </tile>
+  <tile id="28">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile031.png"/>
+  </tile>
+  <tile id="29">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile032.png"/>
+  </tile>
+  <tile id="30">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile036.png"/>
+  </tile>
+  <tile id="31">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile037.png"/>
+  </tile>
+  <tile id="32">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile038.png"/>
+  </tile>
+  <tile id="33">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile039.png"/>
+  </tile>
+  <tile id="34">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile040.png"/>
+  </tile>
+  <tile id="35">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile041.png"/>
+  </tile>
+  <tile id="36">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile042.png"/>
+  </tile>
+  <tile id="37">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile043.png"/>
+  </tile>
+  <tile id="38">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile044.png"/>
+  </tile>
+  <tile id="39">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile045.png"/>
+  </tile>
+  <tile id="40">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile046.png"/>
+  </tile>
+ </tileset>
+ <tileset firstgid="42" name="Points" tilewidth="64" tileheight="64">
+  <tile id="0">
+   <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile144.png"/>
+  </tile>
+ </tileset>
+ <tileset firstgid="43" name="rpgTile061" tilewidth="32" tileheight="32" spacing="1" margin="1">
+  <tileoffset x="16" y="17"/>
+  <image source="KenneyRPGpack/PNG/rpgTile061.png" width="64" height="64"/>
+ </tileset>
+ <layer name="Islands" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJztlUsOgCAMRHsAo3t/C1fe/4RuWDRNpUwxCGIT0ibkOQxGh6jvWlj3rhgv97imnEuVpp/jP/Uuavc/hvk0+uRkYv4994Aylv4a5sPoM+MRRjtvy/5R5mvv//f/Lf9bmAej74xHGEtf7t91jUPzSXtOSuVkl6WP5g+BzNP52+r3FzsbUm/7JydT6/+n9/9v7/7R/EEZmQNSH8mP3CX1S5SmfwGLhid/
+  </data>
+ </layer>
+ <layer name="Connection" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2AUjAJMoI2E0fnYMDY9lNiNj08tPaP24zeP1LikVfzT24xR+0ftH7V/4OyH6R8s5c9IK/8H2n6Y/oFqf4yCUTASAAAuiw1x
+  </data>
+ </layer>
+ <layer name="Points" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJzt1LEJAAAIAzDv8f8DPcFFUDDZOnQqNALglmzyVIeb7A9s8T+/2Z8PCoDOAqE=
+  </data>
+ </layer>
+ <objectgroup name="Points">
+  <object id="11" name="AA" x="195.533" y="257.347" width="56.9268" height="56.9268"/>
+  <object id="12" name="AC" x="195.533" y="385.541" width="56.9268" height="56.9268"/>
+  <object id="13" name="AD" x="322.423" y="385.541" width="56.9268" height="56.9268"/>
+  <object id="14" name="AB" x="322.423" y="258.217" width="56.9268" height="56.9268"/>
+  <object id="15" name="BA" x="612.272" y="257.347" width="56.9268" height="56.9268"/>
+  <object id="16" name="BC" x="611.838" y="385.541" width="56.9268" height="56.9268"/>
+  <object id="17" name="BD" x="740.032" y="385.107" width="56.9268" height="56.9268"/>
+  <object id="18" name="BB" x="740.466" y="258.651" width="56.9268" height="56.9268"/>
+  <object id="19" name="DA" x="610.968" y="674.087" width="56.9268" height="56.9268"/>
+  <object id="20" name="DB" x="740.032" y="673.217" width="56.9268" height="56.9268"/>
+  <object id="21" name="DC" x="610.968" y="802.715" width="56.9268" height="56.9268"/>
+  <object id="22" name="DD" x="739.162" y="802.715" width="56.9268" height="56.9268"/>
+  <object id="23" name="CA" x="195.533" y="674.087" width="56.9268" height="56.9268"/>
+  <object id="24" name="CC" x="195.968" y="801.846" width="56.9268" height="56.9268"/>
+  <object id="25" name="CD" x="322.858" y="802.715" width="56.9268" height="56.9268"/>
+  <object id="26" name="CB" x="323.292" y="674.956" width="56.9268" height="56.9268"/>
+ </objectgroup>
+ <objectgroup name="Paths">
+  <object id="28" name="AA-AB" x="256.071" y="271.577" width="67.8164" height="30.4005"/>
+  <object id="29" name="AC-AD" x="255.487" y="398.855" width="67.8164" height="30.4005"/>
+  <object id="30" name="BA-BB" x="672.909" y="271.407" width="67.8164" height="30.4005"/>
+  <object id="31" name="BC-BD" x="671.909" y="400.609" width="67.8164" height="30.4005"/>
+  <object id="32" name="DA-DB" x="671.909" y="687.66" width="67.8164" height="30.4005"/>
+  <object id="33" name="DC-DD" x="671.909" y="815.693" width="67.8164" height="30.4005"/>
+  <object id="34" name="CC-CD" x="255.825" y="816.862" width="67.8164" height="30.4005"/>
+  <object id="35" name="CA-CB" x="255.656" y="687.491" width="67.8164" height="30.4005"/>
+  <object id="38" name="CA-CC" x="208.471" y="729.922" width="32.1543" height="70.4"/>
+  <object id="39" name="CB-CD" x="337.673" y="731.091" width="32.1543" height="70.4"/>
+  <object id="40" name="AA-AC" x="210.225" y="313.669" width="32.1543" height="70.4"/>
+  <object id="41" name="AB-AD" x="338.257" y="313.669" width="32.1543" height="70.4"/>
+  <object id="42" name="BA-BC" x="625.893" y="313.669" width="32.1543" height="70.4"/>
+  <object id="43" name="BB-BD" x="752.759" y="314.254" width="32.1543" height="70.4"/>
+  <object id="44" name="AC-CA" x="211.64" y="443.456" width="28.6466" height="229.757"/>
+  <object id="45" name="BD-DB" x="754.169" y="445.21" width="31.5697" height="226.25"/>
+  <object id="46" name="DA-DC" x="624.723" y="730.507" width="32.1543" height="70.4"/>
+  <object id="47" name="DB-DD" x="754.509" y="729.922" width="32.1543" height="70.4"/>
+  <object id="48" name="CD-DC" x="382.935" y="817.031" width="229.757" height="29.2312"/>
+  <object id="49" name="AB-BA" x="382.935" y="272.161" width="230.342" height="30.9851"/>
+ </objectgroup>
+</map>

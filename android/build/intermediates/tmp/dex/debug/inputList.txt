@@ -1,0 +1,6 @@
+/Users/leefoster/Development/CPSC 495/RiskLikeSimulator/android/build/intermediates/classes/debug
+/Users/leefoster/Development/CPSC 495/RiskLikeSimulator/android/build/intermediates/pre-dexed/debug/core-1.0-d9fec85da75b348e4c8f7263beb59a710fe87907.jar
+/Users/leefoster/Development/CPSC 495/RiskLikeSimulator/android/build/intermediates/pre-dexed/debug/gdx-freetype-1.5.4-cad0a82ec72bb4fa3a9ecd2534b9774239edf76c.jar
+/Users/leefoster/Development/CPSC 495/RiskLikeSimulator/android/build/intermediates/pre-dexed/debug/gdx-box2d-1.5.4-647f425826b5253deddab3bfbde6bc5952ea619c.jar
+/Users/leefoster/Development/CPSC 495/RiskLikeSimulator/android/build/intermediates/pre-dexed/debug/gdx-backend-android-1.5.4-ca9ec1639e45af21f4a3b634d8b05657b5a38076.jar
+/Users/leefoster/Development/CPSC 495/RiskLikeSimulator/android/build/intermediates/pre-dexed/debug/gdx-1.5.4-b238cca874a0b1be531414fbf361c82c39c277d5.jar
