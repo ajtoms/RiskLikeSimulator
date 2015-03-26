@@ -1,0 +1,6 @@
+/build/
+/core/build/
+/desktop/build/
+/android/build/
+/sdk/
+local.properties
