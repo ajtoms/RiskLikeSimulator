@@ -1,5 +1,6 @@
 package com.unbc.riskybusiness.models;
 
+import com.unbc.riskybusiness.agents.Agent;
 import com.unbc.riskybusiness.main.DiceRoller;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,9 +16,17 @@ import java.util.Collections;
  */
 public class Force {
 
+    private Agent owner;
     private int myTroops;
     
-    public Force(int troops){
+    /**
+     * Initializes a Force Object. 
+     * 
+     * @param owner The Agent who is commanding the force.
+     * @param troops The number of troops that make up the force.
+     */
+    public Force(Agent owner, int troops){
+        this.owner = owner;
         this.myTroops = troops;
     }
     
@@ -34,6 +43,7 @@ public class Force {
      * @return The Force who won the battle.
      */
     public Force attack(Force defendingForce){
+        //We roll for casualties until one Force is destroyed completely.
         while(myTroops >= 1 && defendingForce.myTroops >= 1){
             
             //Attacker gets min of troops and 3 dice. Defender gets min of troops and 2 dice.
@@ -49,9 +59,13 @@ public class Force {
             for(int i = 0; i < defendDice; i++){
                 defendPool[i] = DiceRoller.rollD6(1);
             }
+            
+            //Then we sort the dice pools because we're comparing the highest values.
             Arrays.sort(attackPool, Collections.reverseOrder());
             Arrays.sort(defendPool, Collections.reverseOrder());
             
+            //We don't know for sure how many dice we're checking so keep taking the top roll from
+            //each pool until one of them is empty.
             for(int i = 0; i < defendPool.length && i < attackPool.length; i++){
                 if(defendPool[i] >= attackPool[i]){  //Defenders win ties.
                     this.myTroops--;
@@ -59,14 +73,22 @@ public class Force {
                     defendingForce.myTroops--;
                 }
             }
-            
-            
-            
         }
+        
+        //There is guaranteed to be one or more troops in only one of the Forces left; it's 
+        //impossible to tie.
         if(this.myTroops > defendingForce.myTroops)
             return this;
         else
             return defendingForce;
+    }
+    
+    public int getTroops(){
+        return this.myTroops;
+    }
+    
+    public Agent getOwner(){
+        return this.getOwner();
     }
     
 }

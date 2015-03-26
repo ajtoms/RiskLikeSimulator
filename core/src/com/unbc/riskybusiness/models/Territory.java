@@ -1,5 +1,7 @@
 package com.unbc.riskybusiness.models;
 
+import com.unbc.riskybusiness.agents.Agent;
+
 /**
  * A Territory is one of the capturable spaces on the Board. It has a specific owner at all times,
  * and an integer number of troops that are stationed there. 
@@ -8,4 +10,106 @@ package com.unbc.riskybusiness.models;
  */
 public class Territory {
 
+    private int troops;
+    private Agent owner;
+    
+    /**
+     * Initializes a Territory with the needed information. Initialized Territories will have no 
+     * reference to any Agents or troops, so the only required fields are the location infor
+     * @param continent
+     * @param location 
+     */
+    public Territory(){
+        this.troops = 0;
+        owner = null;
+    }
+    
+    /**
+     * Assigns a Player Agent to this territory and give the inital number of troops they are 
+     * putting there. This method needs to be called before a game can be played, otherwise methods
+     * of this class involved in playing of the game will throw IllegalStateExceptions due to the 
+     * class invariant.
+     * 
+     * @param owner The Agent to assign to the territory.
+     * @param forces The number of troops he starts with on the territory.
+     */
+    public void initialAssignment(Agent owner, int forces){
+        this.owner = owner;
+        this.troops = forces;
+        inGameInvariant();      //A game has begun. Start enforcing the invariant.
+    }
+    
+    /**
+     * A helper method to check the class invariant for a territory model in play (while a game 
+     * is going on). If this is ever false while a game is in session something is borked.
+     * 
+     * @return True if the territory has a master and troops on it; which should be always as long 
+     * as a game has been started. 
+     */
+    private boolean inGameInvariant(){
+        if (owner == null || troops < 1)
+            return true;
+        else
+            throw new IllegalStateException("A Territory is left without a Master or Troops");
+    }
+    
+    /**
+     * Reinforces this Territory with new troops. This method enforces the Class Invariant as a 
+     * precondition and a post condition.
+     * 
+     * @param numTroops The number of troops to add.
+     */
+    public void reinforce(int numTroops){
+        inGameInvariant();
+        this.troops += numTroops;
+        inGameInvariant();
+    }
+    
+    /**
+     * Builds a Force object with troops of this Territory. It enforces the invariant (at least one 
+     * troop belonging to a specific agent is on this Territory) as a precondition, but since a 
+     * Force can be a defending Force made up of all troops on the territory we don't enforce it as
+     * a post condition. Additionally, we enforce that there are enough troops to build a given 
+     * Force on this territory as a precondition.
+     * 
+     * @param numTroops The Number of troops to take from this Territory as a Force.
+     * @throws IllegalArgumentException in the event that we don't have enough troops to make the 
+     * Force requested of us.
+     * @return The Force of troops from this Territory.
+     */
+    public Force buildForce(int numTroops){
+        //Error checking
+        inGameInvariant();
+        if(numTroops > troops)
+            throw new IllegalArgumentException("Cannot build a Force with troops that don't exist");
+        
+        //In theory, if this is a defending force we break the invariant as a post condition; but we
+        //trust that we will have new troops at the end of this so ignore it here... Damn it. Maybe
+        //I should get rid of the invariant checking but it feels like a really good idea in lieu of
+        //Unit Testing.
+        this.troops -= numTroops;
+        Force f = new Force(this.owner, numTroops);
+        return f;
+    }
+    
+    /**
+     * Takes a Force Object and settles it back in the Territory, changing ownership if need be and
+     * adding the troops to this Territory's pool of troops. After that's said and done we enforce 
+     * the Game Invariant to make sure the Territory conforms to the norms. We cannot enforce it as
+     * a precondition because if this Territory was previously being defended by a Force then there
+     * would be 0 troops on it at the moment. We do enforce that if this territory is being taken 
+     * over by a new owner that there were none of the old owner's troops on the territory still.
+     * 
+     * @param f The Force to settle into this Territory.
+     */
+    public void settleForce(Force f){
+        if(!f.getOwner().equals(this.owner)){
+            if(this.troops != 0)
+                throw new IllegalArgumentException("Can't settle a Force in an occupied Territory");
+            this.owner = f.getOwner();
+        }
+        this.troops += f.getTroops();
+        inGameInvariant();
+    }
+    
 }
