@@ -4,3 +4,4 @@
 /android/build/
 /sdk/
 /local.properties
+/.nb-gradle/private/
