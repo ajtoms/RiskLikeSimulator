@@ -196,28 +196,27 @@ public class GameScreen extends ScreenAdapter implements GestureListener, InputP
         Vector3 windowCoords = new Vector3(x,y,0);
         camera.unproject(windowCoords);
         Vector2 cameraCoords = new Vector2(windowCoords.x, windowCoords.y);
+        
         for (BoardNode b : board.nodes.values()) {
             if (b.rect.contains(cameraCoords)) {
+                // Initial selection has to be on one of these players tiles
                 if (board.pieces.get(b.name).owner == currentPlayer) {
-                    if (board.selectedNode == null) 
+                    if (board.selectedNode == null)
                         board.setSelected(b);
                     else if (board.selectedNode == b)
                         board.deselect();
-                    else {
-                        if (b.adjacentTo(board.selectedNode)) {
-                            board.deselect();
-                            if (currentState == BLUETURN)
-                                currentState = GOTBLUEMOVE;
-                            if (currentState == REDTURN)
-                                currentState = GOTREDTURN;
-                        }
-                    }
-                    
-                    break;
                 }
+                else if (board.pieces.get(b.name).owner != currentPlayer &&
+                    b.adjacentTo(board.selectedNode)) {
+                    board.deselect();
+                    if (currentState == BLUETURN)
+                        currentState = GOTBLUEMOVE;
+                    if (currentState == REDTURN)
+                        currentState = GOTREDTURN;
+                }
+                break;
             }
         }
-
         
         return true;
     }

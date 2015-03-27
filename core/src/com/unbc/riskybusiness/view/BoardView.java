@@ -127,7 +127,8 @@ public class BoardView {
 
         // SO MUCH HARD CODING
         boolean adjacentTo(BoardNode selectedNode) {
-            
+            if (selectedNode == null)
+                return false;
             // THEM A'S
             if (selectedNode.name.equals("AA"))
                 return name.equals("AC") || name.equals("AB");
