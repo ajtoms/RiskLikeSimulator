@@ -7,7 +7,11 @@ import com.unbc.riskybusiness.view.GameGUI;
 public class DesktopLauncher {
     
         public static void main(String[] args) {
-            LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+           showGUI();
+        }
+        
+        private static void showGUI() {
+             LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 1280;
                 config.height = 720;
                 new LwjglApplication(new GameGUI(), config);

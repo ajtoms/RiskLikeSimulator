@@ -9,7 +9,6 @@ import com.unbc.riskybusiness.controllers.Game;
  * @author Andrew J Toms II
  */
 public interface Agent {
-
     /**
      * Gives the Agent a reference to a Game object that he is now 'playing'. Any decision-making
      * methods called will reference this Game Object to get its up-to-date state information.

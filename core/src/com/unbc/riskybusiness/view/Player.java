@@ -5,69 +5,46 @@
  */
 package com.unbc.riskybusiness.view;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
-import com.badlogic.gdx.math.Vector2;
+import com.unbc.riskybusiness.agents.Agent;
 
 /**
  *
  * @author leefoster
  */
-public class Player extends Sprite {
-    private final BitmapFont font;
+public class Player {
+    BitmapFont font = null;
+    Texture pieceTexture = null;
+    PlayerUI ui = null;
+    Agent agent = null;
     
     String unitCount = "10";
-    float scale;
-    PlayerUI ui;
+    float scale = 0.0f;
     
-    public Player(PlayerColor color, float scale) {
-        super(new Sprite(new Texture("pieceBlue.png")));
-        Texture t = null;
+    public Player(PlayerColor color, float scale, Agent agent,BitmapFont font) {
         
         switch (color) {
-            case BLUE: t = new Texture("pieceBlue.png"); break;
-            case RED: t = new Texture("pieceRed.png"); break;
-            case YELLOW: t = new Texture("pieceYellow.png"); break;
-            case GREEN: t = new Texture("pieceGreen.png"); break;
+            case BLUE: pieceTexture = new Texture("pieceBlue.png"); break;
+            case RED: pieceTexture = new Texture("pieceRed.png"); break;
+            case YELLOW: pieceTexture = new Texture("pieceYellow.png"); break;
+            case GREEN: pieceTexture = new Texture("pieceGreen.png"); break;
         }
-        
+        this.agent = agent;
         this.scale = scale;
-        setTexture(t);
-        setSize(this.getWidth() * scale * 1.2f, this.getHeight() * scale * 1.2f);
+        this.font = font;
         
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("opensans-bold.ttf"));
-        FreeTypeFontParameter parameter = new FreeTypeFontParameter();
-        font = generator.generateFont(parameter);
-        generator.dispose();
         ui = new PlayerUI(color, font);
     }
-
-    public void setPosition(Vector2 newPosition) {
-        setPosition(newPosition.x * scale - this.getWidth()/2,
-                newPosition.y* scale - 30);
-    }
     
+    /* batch.begin() is called in GameScreen draw() so it doesn't need to be 
+       called here.
+    */
     public void draw(Batch batch, OrthographicCamera camera) {
-        super.draw(batch);
         ui.update(camera);
         ui.draw(batch);
-        font.setColor(1.0f, 1.0f, 1.0f, 1.0f);
-        font.draw(batch, 
-                unitCount, 
-                (getX()+getWidth()*0.5f) - font.getBounds(unitCount).width * 0.5f, 
-                getY()+getHeight()*0.5f);
     }
     
     public void startTurn() {
@@ -77,4 +54,5 @@ public class Player extends Sprite {
     public void endTurn() {
         ui.setTexture(ui.disabled);
     }
+    
 }

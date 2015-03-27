@@ -5,3 +5,16 @@
 /sdk/
 /local.properties
 /.nb-gradle/private/
+desktop/src/com/unbc/riskybusiness/desktop/Derp.java
+
+.gradle/2.2/taskArtifacts/cache.properties
+
+*.lock
+
+*.bin
+
+*.dex
+
+*.xml
+
+*.jar

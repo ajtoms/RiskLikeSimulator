@@ -129,8 +129,11 @@
   <tile id="0">
    <image width="64" height="64" source="KenneyRPGpack/PNG/rpgTile144.png"/>
   </tile>
+  <tile id="1">
+   <image width="64" height="64" source="tileSelected.png"/>
+  </tile>
  </tileset>
- <tileset firstgid="43" name="rpgTile061" tilewidth="32" tileheight="32" spacing="1" margin="1">
+ <tileset firstgid="44" name="rpgTile061" tilewidth="32" tileheight="32" spacing="1" margin="1">
   <tileoffset x="16" y="17"/>
   <image source="KenneyRPGpack/PNG/rpgTile061.png" width="64" height="64"/>
  </tileset>
@@ -141,7 +144,7 @@
  </layer>
  <layer name="Connection" width="30" height="30">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFo2BkAG0kjM7HhrHpIcdOfHxq6Rnp9sL0kRpX1I5fepkxau+ovaP2UseMwVBuDPfyeTDVC/So90fBKBiKAACp8g1x
+   eJxjYBgFo2BkAB0kjM7HhrHpIcdOfHxq6Rnp9sL0kRpX1I5fepkxau+ovaP2UseMwVBuDPfyeTDVC/So90fBKBiKAADdMA3B
   </data>
  </layer>
  <layer name="Points" width="30" height="30">

@@ -13,18 +13,25 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.unbc.riskybusiness.agents.Agent;
+import com.unbc.riskybusiness.models.Territory;
 import com.unbc.riskybusiness.view.BoardView.BoardNode;
 import static com.unbc.riskybusiness.view.GameState.*;
+import java.util.ArrayList;
 /**
  *
  * @author leefoster
  */
-public class GameScreen extends ScreenAdapter implements GestureListener, InputProcessor{
+public class GameScreen extends ScreenAdapter implements GestureListener, InputProcessor {
 
     private boolean firstRun = true;
     private final float scale = 1.0f;
@@ -34,17 +41,46 @@ public class GameScreen extends ScreenAdapter implements GestureListener, InputP
     private Texture backgroundTexture = new Texture("water.png");
     private OrthographicCamera camera = new OrthographicCamera();
     
-    private Player bluePlayer = new Player(PlayerColor.BLUE, scale);
-    private Player redPlayer = new Player(PlayerColor.RED, scale);
-    private Player yellowPlayer = new Player(PlayerColor.YELLOW, scale);
-    private Player greenPlayer = new Player(PlayerColor.GREEN, scale);
+    private Player currentPlayer = null;
+    
+    private Player bluePlayer = null;
+    private Player redPlayer = null;
+    private Player yellowPlayer = null;
+    private Player greenPlayer = null;
+    
     private GameState currentState = GameState.START;
     
     private OrthogonalTiledMapRenderer renderer;
+    private BitmapFont font;
+    
+    
+    public GameScreen(ArrayList<Agent> agents, ArrayList<Territory> territories) {
+       FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("opensans-bold.ttf"));
+       FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+       font = generator.generateFont(parameter);
+       font.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+       generator.dispose(); 
+       board.font = font; 
+       board.scale = scale;
+       
+       if (agents.size() >= 1)
+        this.bluePlayer = new Player(PlayerColor.BLUE,scale, agents.get(0),font);
+       if (agents.size() >= 2)
+        this.redPlayer = new Player(PlayerColor.RED,scale, agents.get(1),font);
+       if (agents.size() >= 3)
+        this.yellowPlayer = new Player(PlayerColor.YELLOW,scale,agents.get(2),font);
+       if (agents.size() >= 4)
+        this.greenPlayer = new Player(PlayerColor.GREEN,scale,agents.get(3),font);
+       
+       updateBoardView(territories);
+
+    }
     
     @Override
     public void show() {
         renderer = new OrthogonalTiledMapRenderer(board.tiledMap, scale);
+        
+        board.font = font;
         
         GestureDetector gd = new GestureDetector(this);
         Gdx.input.setInputProcessor(gd);
@@ -64,7 +100,9 @@ public class GameScreen extends ScreenAdapter implements GestureListener, InputP
         renderer.setView(camera);
 
         updateState();
-        bluePlayer.setPosition(board.getNodeLocation("AA"));
+        
+        // bluePlayer.setPosition(board.getNodeLocation("AA"));
+       
         // Draw the tiled BG
         drawBackground(renderer.getBatch());
         
@@ -73,6 +111,7 @@ public class GameScreen extends ScreenAdapter implements GestureListener, InputP
         
         // Draw the pieces and UI
         renderer.getBatch().begin();
+        board.draw(renderer.getBatch(), camera);
         bluePlayer.draw(renderer.getBatch(), camera);
         redPlayer.draw(renderer.getBatch(), camera);
         renderer.getBatch().end();
@@ -90,6 +129,7 @@ public class GameScreen extends ScreenAdapter implements GestureListener, InputP
                 currentState = BLUETURN;
                 break;
             case BLUETURN:
+                currentPlayer = bluePlayer;
                 bluePlayer.startTurn();
                 break;
             case GOTBLUEMOVE: 
@@ -97,6 +137,7 @@ public class GameScreen extends ScreenAdapter implements GestureListener, InputP
                 currentState = REDTURN;
                 break;
             case REDTURN: 
+                currentPlayer = redPlayer;
                 redPlayer.startTurn();
                 break;
             case GOTREDTURN: 
@@ -104,6 +145,38 @@ public class GameScreen extends ScreenAdapter implements GestureListener, InputP
                 currentState = BLUETURN;
                 break;
         }
+    }
+    
+    private void updateBoardView(ArrayList<Territory> territories) {
+       for (Territory t : territories) {
+            if (bluePlayer != null && t.getOwner() == bluePlayer.agent) {
+               board.updatePieces(t, bluePlayer);
+            }
+            else if (redPlayer != null && t.getOwner() == redPlayer.agent) {
+               board.updatePieces(t, redPlayer);
+            }
+            else if (greenPlayer != null && t.getOwner() == greenPlayer.agent) {
+               board.updatePieces(t, greenPlayer);
+            }
+            else if (yellowPlayer != null && t.getOwner() == yellowPlayer.agent) {
+               board.updatePieces(t, yellowPlayer);
+            }
+        }
+    }
+    
+    private void drawBackground(Batch batch) {
+        batch.begin();
+        int xStart = (int) (camera.position.x - camera.viewportWidth/2);
+        int xEnd = (int) (camera.position.x + camera.viewportWidth/2);
+        int yStart = (int) (camera.position.y - camera.viewportHeight/2);
+        int yEnd = (int) (camera.position.y + camera.viewportHeight/2);
+        
+        for (int i = xStart; i < xEnd; i+=backgroundTexture.getWidth()) {
+            for (int j = yStart; j < yEnd; j+=backgroundTexture.getHeight()) {
+                renderer.getBatch().draw(backgroundTexture, i, j);
+            }
+        }
+        batch.end();
     }
     
     @Override
@@ -120,20 +193,33 @@ public class GameScreen extends ScreenAdapter implements GestureListener, InputP
 
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
-        Vector3 tmp3 = new Vector3(x,y,0);
-        camera.unproject(tmp3);
-        Vector2 tmp2 = new Vector2(tmp3.x, tmp3.y);
+        // Set up the various coordinates
+        Vector3 windowCoords = new Vector3(x,y,0);
+        camera.unproject(windowCoords);
+        Vector2 cameraCoords = new Vector2(windowCoords.x, windowCoords.y);
         for (BoardNode b : board.nodes.values()) {
-            //System.out.println(b.rect);
-            if (b.rect.contains(tmp2)) {
-                System.out.println(b.name);
-                break;
+            if (b.rect.contains(cameraCoords)) {
+                if (board.pieces.get(b.name).owner == currentPlayer) {
+                    if (board.selectedNode == null) 
+                        board.setSelected(b);
+                    else if (board.selectedNode == b)
+                        board.deselect();
+                    else {
+                        if (b.adjacentTo(board.selectedNode)) {
+                            board.deselect();
+                            if (currentState == BLUETURN)
+                                currentState = GOTBLUEMOVE;
+                            if (currentState == REDTURN)
+                                currentState = GOTREDTURN;
+                        }
+                    }
+                    
+                    break;
+                }
             }
         }
-        if (currentState == BLUETURN)
-            currentState = GOTBLUEMOVE;
-        if (currentState == REDTURN)
-            currentState = GOTREDTURN;
+
+        
         return true;
     }
 
@@ -147,21 +233,6 @@ public class GameScreen extends ScreenAdapter implements GestureListener, InputP
         return true;
     }
 
-    private void drawBackground(Batch batch) {
-        batch.begin();
-        int xStart = (int) (camera.position.x - camera.viewportWidth/2);
-        int xEnd = (int) (camera.position.x + camera.viewportWidth/2);
-        int yStart = (int) (camera.position.y - camera.viewportHeight/2);
-        int yEnd = (int) (camera.position.y + camera.viewportHeight/2);
-        
-        for (int i = xStart; i < xEnd; i+=backgroundTexture.getWidth()) {
-            for (int j = yStart; j < yEnd; j+=backgroundTexture.getHeight()) {
-                renderer.getBatch().draw(backgroundTexture, i, j);
-            }
-        }
-        batch.end();
-    }
-    
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
         camera.position.set(camera.position.x + -deltaX,
