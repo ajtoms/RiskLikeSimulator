@@ -17,8 +17,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -27,6 +25,7 @@ import com.unbc.riskybusiness.models.Territory;
 import com.unbc.riskybusiness.view.BoardView.BoardNode;
 import static com.unbc.riskybusiness.view.GameState.*;
 import java.util.ArrayList;
+import java.util.List;
 /**
  *
  * @author leefoster
@@ -54,7 +53,7 @@ public class GameScreen extends ScreenAdapter implements GestureListener, InputP
     private BitmapFont font;
     
     
-    public GameScreen(ArrayList<Agent> agents, ArrayList<Territory> territories) {
+    public GameScreen(ArrayList<Agent> agents, List<Territory> territories) {
        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("opensans-bold.ttf"));
        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
        font = generator.generateFont(parameter);
@@ -147,7 +146,7 @@ public class GameScreen extends ScreenAdapter implements GestureListener, InputP
         }
     }
     
-    private void updateBoardView(ArrayList<Territory> territories) {
+    private void updateBoardView(List<Territory> territories) {
        for (Territory t : territories) {
             if (bluePlayer != null && t.getOwner() == bluePlayer.agent) {
                board.updatePieces(t, bluePlayer);

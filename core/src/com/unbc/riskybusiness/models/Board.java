@@ -22,7 +22,7 @@ public class Board {
         adjacencies = new HashMap<Territory, ArrayList<Territory>>();
         for(int x = 0; x < territories.length; x++){
             for (int y = 0; y < territories[x].length; y++){
-                territories[x][y] = new Territory();
+                territories[x][y] = new Territory(x,y);
                 
                 //For now, we can't make the adjacency matrix because not all territories are 
                 //guaranteed to be created.

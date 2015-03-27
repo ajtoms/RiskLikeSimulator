@@ -15,16 +15,42 @@ public class Territory {
     private int myId;
     private int troops;
     private Agent owner;
+    BoardLocation myLoc;
+    
     /**
      * Initializes a Territory with the needed information. Initialized Territories will have no 
-     * reference to any Agents or troops, so the only required fields are the location infor
-     * @param continent
-     * @param location 
+     * reference to any Agents or troops, so the only required fields are the location information.
+     * 
+     * @param x The X coordinate of this territory.
+     * @param y The Y coordinate of this territory.
      */
-    public Territory(){
+    public Territory(int x, int y){
         myId = TERR_ID++;
         this.troops = 0;
         owner = null;
+        
+        //Figure out my BoardLocation value by converting the x,y coord into a Board Location
+        char cont, terr;
+        if(x < 2){  //A or C
+            if(y < 2){
+                cont = 'A';
+                terr = (char)(65 + x*2 + y);        //We kinda convert to binary and add to 65 (ish)
+            } else {
+                cont = 'B';
+                terr = (char)(65 + x*2 + y-2);
+            }
+        } else {    //B or D
+            if(y < 2){
+                cont = 'C';
+                terr = (char)(65 + (x-2)*2 + y);
+            } else {
+                cont = 'D';
+                terr = (char)(65 + (x-2)*2 + y-2);
+            }
+        }
+        
+        String loc = cont + "" + terr;
+        myLoc = BoardLocation.valueOf(loc);
     }
     
     /**
@@ -131,6 +157,15 @@ public class Territory {
      */
     public int getNumTroops(){
         return this.troops;
+    }
+    
+    /**
+     * Returns the enumerated type value of the Board Location for simplified GUI rendering purposes
+     * 
+     * @return As above.
+     */
+    public BoardLocation getLocation(){
+        return myLoc;
     }
     
     /**

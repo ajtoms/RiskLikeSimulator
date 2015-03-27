@@ -77,7 +77,7 @@ public class BoardView {
             pieces.remove(territory.getLocation().toString());
         }
         PlayerPiece piece = new PlayerPiece(p.pieceTexture, scale, font,
-                territory.getTroops() + "", p);
+                territory.getNumTroops() + "", p);
         piece.setPosition(nodes.get(territory.getLocation().toString()).center);
         //piece.setPosition(piecePosition);
         pieces.put(territory.getLocation().toString(), piece);
