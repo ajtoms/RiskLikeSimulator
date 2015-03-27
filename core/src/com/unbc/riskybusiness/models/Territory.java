@@ -1,6 +1,7 @@
 package com.unbc.riskybusiness.models;
 
 import com.unbc.riskybusiness.agents.Agent;
+import com.unbc.riskybusiness.view.BoardLocation;
 
 /**
  * A Territory is one of the capturable spaces on the Board. It has a specific owner at all times,
@@ -12,16 +13,17 @@ public class Territory {
 
     private int troops;
     private Agent owner;
-    
+    private BoardLocation location;
     /**
      * Initializes a Territory with the needed information. Initialized Territories will have no 
      * reference to any Agents or troops, so the only required fields are the location infor
      * @param continent
      * @param location 
      */
-    public Territory(){
+    public Territory(BoardLocation location){
         this.troops = 0;
         owner = null;
+        this.location = location;
     }
     
     /**
@@ -47,7 +49,7 @@ public class Territory {
      * as a game has been started. 
      */
     private boolean inGameInvariant(){
-        if (owner == null || troops < 1)
+        if (owner != null && troops >= 1)
             return true;
         else
             throw new IllegalStateException("A Territory is left without a Master or Troops");
@@ -112,4 +114,15 @@ public class Territory {
         inGameInvariant();
     }
     
+    public Agent getOwner() {
+        return owner;
+    }
+    
+    public BoardLocation getLocation() {
+        return location;
+    }
+    
+    public int getTroops() {
+        return troops;
+    }
 }

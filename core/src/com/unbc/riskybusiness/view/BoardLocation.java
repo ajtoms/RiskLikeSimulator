@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.unbc.riskybusiness.desktop;
+package com.unbc.riskybusiness.view;
 
 /**
  *
  * @author leefoster
  */
-public class Derp {
-    
+public enum BoardLocation {
+    AA,AB,AC,AD,BA,BB,BC,BD,CA,CB,CC,CD,DA,DB,DC,DD;
 }
