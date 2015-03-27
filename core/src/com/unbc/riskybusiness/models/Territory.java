@@ -10,6 +10,8 @@ import com.unbc.riskybusiness.agents.Agent;
  */
 public class Territory {
 
+    private static int TERR_ID = 0;
+    private int myId;
     private int troops;
     private Agent owner;
     
@@ -20,6 +22,7 @@ public class Territory {
      * @param location 
      */
     public Territory(){
+        myId = TERR_ID++;
         this.troops = 0;
         owner = null;
     }
@@ -110,6 +113,49 @@ public class Territory {
         }
         this.troops += f.getTroops();
         inGameInvariant();
+    }
+    
+    /**
+     * Getter for the Territory's Owner Agent.
+     * 
+     * @return The Owner Agent of this Territory.
+     */
+    public Agent getOwner(){
+        return owner;
+    }
+    
+    /**
+     * Getter for the Territory's Number of Troops.
+     * 
+     * @return The number of troops on this Territory.
+     */
+    public int getNumTroops(){
+        return this.troops;
+    }
+    
+    /**
+     * Lazy Hashing. There should be zero collisions and the number of ids should be small enough 
+     * that we're fine.
+     * 
+     * @return The hash code for this Territory, which is a static ID value assigned to it on 
+     * construction.
+     */
+    @Override
+    public int hashCode(){
+        return this.myId;
+    }
+    
+    /**
+     * Compares this Territory object with another object. If the other object is a Territory, this
+     * returns true iff the two Territories have the same static identifier assigned to them, which
+     * is only possible in the event that they are the same Territory.
+     * 
+     * @param o The Object to compare.
+     * @return True iff the object o is the same as this Territory.
+     */
+    @Override
+    public boolean equals(Object o){
+        return this.myId == ((Territory)o).myId;
     }
     
 }
