@@ -139,4 +139,44 @@ public class Board {
         return all;
     }
     
+    /**
+     * 
+     * @param a
+     * @return 
+     */
+    public int continentBonusFor(Agent a){
+        int ret = 0;
+        boolean ownsA = territories[0][0].getOwner().equals(a) && 
+                territories[1][0].getOwner().equals(a) &&
+                territories[0][1].getOwner().equals(a) &&
+                territories[1][1].getOwner().equals(a);
+        boolean ownsB = territories[2][0].getOwner().equals(a) && 
+                territories[3][0].getOwner().equals(a) &&
+                territories[2][1].getOwner().equals(a) &&
+                territories[3][1].getOwner().equals(a);
+        boolean ownsC = territories[0][2].getOwner().equals(a) && 
+                territories[0][3].getOwner().equals(a) &&
+                territories[1][2].getOwner().equals(a) &&
+                territories[1][3].getOwner().equals(a);
+        boolean ownsD = territories[2][2].getOwner().equals(a) && 
+                territories[3][3].getOwner().equals(a) &&
+                territories[2][3].getOwner().equals(a) &&
+                territories[3][2].getOwner().equals(a);
+        return ret;
+    }
+    
+    @Override
+    public String toString(){
+        String ret = "";
+        for(Territory t : getAllTerritories()){
+            ret += t + ":\n\t";
+            List<Territory> adjs = adjacencies.get(t);
+            for(Territory adj : adjs){
+                ret += adj + " ";
+            }
+            ret += "\n";
+        }
+        return ret;
+    }
+    
 }

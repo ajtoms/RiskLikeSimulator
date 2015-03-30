@@ -34,18 +34,18 @@ public class Territory {
         if(x < 2){  //A or C
             if(y < 2){
                 cont = 'A';
-                terr = (char)(65 + x*2 + y);        //We kinda convert to binary and add to 65 (ish)
+                terr = (char)(65 + y*2 + x);        //We kinda convert to binary and add to 65 (ish)
             } else {
-                cont = 'B';
-                terr = (char)(65 + x*2 + y-2);
+                cont = 'C';
+                terr = (char)(65 + (y-2)*2 + x);
             }
         } else {    //B or D
             if(y < 2){
-                cont = 'C';
-                terr = (char)(65 + (x-2)*2 + y);
+                cont = 'B';
+                terr = (char)(65 + y*2 + x-2);
             } else {
                 cont = 'D';
-                terr = (char)(65 + (x-2)*2 + y-2);
+                terr = (char)(65 + (y-2)*2 + x-2);
             }
         }
         
@@ -147,6 +147,7 @@ public class Territory {
      * @return The Owner Agent of this Territory.
      */
     public Agent getOwner(){
+        System.out.println(myLoc);
         return owner;
     }
     
@@ -191,6 +192,11 @@ public class Territory {
     @Override
     public boolean equals(Object o){
         return this.myId == ((Territory)o).myId;
+    }
+    
+    @Override
+    public String toString(){
+        return myLoc.toString();
     }
     
 }

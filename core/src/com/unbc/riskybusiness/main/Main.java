@@ -1,6 +1,8 @@
 package com.unbc.riskybusiness.main;
 
-import com.unbc.riskybusiness.models.Board;
+import com.unbc.riskybusiness.agents.Agent;
+import com.unbc.riskybusiness.agents.BaseAgent;
+import com.unbc.riskybusiness.controllers.Game;
 import com.unbc.riskybusiness.models.Territory;
 
 /**
@@ -15,10 +17,21 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Board b = new Board();
-        for(Territory t : b.getAllTerritories()){
-            System.out.println(t.getLocation());
-        }
+        Agent a = new BaseAgent();
+        Agent b = new BaseAgent();
+        Agent c = new BaseAgent();
+        Agent d = new BaseAgent();
+        Game g = new Game(a,b,c,d);
+        
+        System.out.println(g.getBoard());
+        
+        //Give the Players references to the Game.
+        a.setGame(g);
+        b.setGame(g);
+        c.setGame(g);
+        d.setGame(g);
+        
+        g.play();
     }
 
 }

@@ -88,7 +88,7 @@ public class Force {
     }
     
     public Agent getOwner(){
-        return this.getOwner();
+        return this.owner;
     }
     
 }
