@@ -20,12 +20,11 @@ public class Player {
     Texture pieceTexture = null;
     PlayerUI ui = null;
     Agent agent = null;
-    
-    String unitCount = "10";
+    PlayerColor color;
     float scale = 0.0f;
     
     public Player(PlayerColor color, float scale, Agent agent,BitmapFont font) {
-        
+        this.color = color;
         switch (color) {
             case BLUE: pieceTexture = new Texture("pieceBlue.png"); break;
             case RED: pieceTexture = new Texture("pieceRed.png"); break;
