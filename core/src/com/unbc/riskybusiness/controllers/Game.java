@@ -1,6 +1,7 @@
 package com.unbc.riskybusiness.controllers;
 
 import com.unbc.riskybusiness.agents.Agent;
+import com.unbc.riskybusiness.main.Logger;
 import com.unbc.riskybusiness.models.Board;
 import com.unbc.riskybusiness.models.Territory;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class Game {
     private static final int BASE_REINFORCEMENTS = 3;
     private int playerIndex;    //The integer index of the current player.
     private Agent[] players;
+    private int[] territoriesOwned;
     private Board board;
     
     /**
@@ -31,6 +33,7 @@ public class Game {
     public Game(Agent player1, Agent player2, Agent player3, Agent player4){
         this.playerIndex = 0;
         this.players = new Agent[]{player1, player2, player3, player4};
+        this.territoriesOwned = new int[]{4,4,4,4};
         this.board = new Board();
         
         //Boards don't know what players are so we will assign territories from the board to the 
@@ -65,11 +68,19 @@ public class Game {
                 continue;
             }
             
+            //Announce the player's turn.
+            Logger.log(String.format("%s begins their turn.", a));
+            
             //Player turn logic.
-            a.reinforce(BASE_REINFORCEMENTS + board.continentBonusFor(a));                     //TODO: Replace the static 3 reinforcements.
+            int reinforcements = BASE_REINFORCEMENTS + board.continentBonusFor(a);
+            Logger.log(String.format("%s gets %d reinforcements.", a, reinforcements));
+            a.reinforce(reinforcements);
             while(a.wantsToAttack()){
+                Logger.log(String.format("%s will now attack.", a));
                 a.attack();
+                logChanges(a);
             }
+            Logger.log(String.format("%s is done attacking and makes a tactical move.", a));
             a.tacticalMove();
             
             //Signal to next player to do a thing.
@@ -77,7 +88,9 @@ public class Game {
         }
         
         //The winner is the owner of all territories.
-        return board.getTerritory(0, 0).getOwner();
+        Agent victor = board.getTerritory(0, 0).getOwner();
+        Logger.log(String.format("The winner is %s", victor));
+        return victor;
     }
     
     /**
@@ -114,4 +127,43 @@ public class Game {
         return lastAgent != null && isOver;
     }
     
+    public void logChanges(Agent active){
+        //Precondition, we know an attack just happened. Find out what went down.
+        if(board.getAgentsTerritories(active).size() > territoriesOwned[playerIndex % 4]){
+            
+            //Active player has one more territory.
+            territoriesOwned[playerIndex % 4] += 1;
+            
+            //In this block we are guaranteed that a territory exchanged hands
+            Agent loser = null;
+            List<Territory> loserLands = null;
+            for(int i = 0; i < players.length && loser == null; i++){
+                //By virtue of the fact that this player is the winner we know it isn't the loser.
+                if(i == playerIndex)
+                    continue;
+                
+                //The loser will have one less territory than we remembered.
+                Agent a = players[i];
+                List<Territory> aLands = board.getAgentsTerritories(a);
+                if(aLands.size() < territoriesOwned[i]){
+                    loser = a;
+                    loserLands = aLands;
+                    territoriesOwned[i] -= 1;
+                }
+            }
+            
+            //Log when players get eliminated.
+            if(loserLands.isEmpty()){
+                String report = String.format("%s lost its last territory to %s. %s is out.", 
+                        loser, active, loser);
+                Logger.log(report);
+            } else {
+                String report = String.format("%s lost a territory to %s.", loser, active);
+                Logger.log(report);
+            }
+        } else {    //In the else clause, the active player lost a skirmish
+            String r = String.format("%s failed to capture a territory with its attack.", active);
+                Logger.log(r);
+        }
+    }
 }

@@ -133,9 +133,6 @@ public class BaseAgent implements Agent{
             }
         }
         
-        if(victim == null)
-            System.out.println("Culprit");
-        
         //Resolve the Attack by building forces and settle the winner in Victim's land
         Force atkForce = attacker.buildForce(attacker.getNumTroops() - 1);
         Force defForce = victim.buildForce(victimStrength);  //Guaranteed not null

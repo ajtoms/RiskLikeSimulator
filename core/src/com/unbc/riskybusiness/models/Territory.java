@@ -147,7 +147,6 @@ public class Territory {
      * @return The Owner Agent of this Territory.
      */
     public Agent getOwner(){
-        System.out.println(myLoc);
         return owner;
     }
     

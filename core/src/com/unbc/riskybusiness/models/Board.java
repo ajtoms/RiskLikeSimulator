@@ -140,9 +140,11 @@ public class Board {
     }
     
     /**
+     * This method returns the number of reinforcements owed to a player for owning an entire 
+     * continent.
      * 
-     * @param a
-     * @return 
+     * @param a THe player in question.
+     * @return The reinforcement bonus they get for owning a continent.
      */
     public int continentBonusFor(Agent a){
         int ret = 0;
@@ -162,6 +164,16 @@ public class Board {
                 territories[3][3].getOwner().equals(a) &&
                 territories[2][3].getOwner().equals(a) &&
                 territories[3][2].getOwner().equals(a);
+        
+        if(ownsA)
+            ret += 2;
+        if(ownsB)
+            ret += 2;
+        if(ownsC)
+            ret += 2;
+        if(ownsD)
+            ret += 2;
+        
         return ret;
     }
     
