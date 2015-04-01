@@ -18,16 +18,23 @@ import java.util.Random;
  */
 public class Logger {
 
+    private static final boolean SUPRESS_TERMINAL = true;
     private static String logName;
     
     public static void startLog(){
+        startLog(true);
+    }
+    
+    public static void startLog(boolean game){
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("(yy-MM-dd @ h_mm_ss)");
         String myTag = randomTag();
-        logName = String.format("Risk Game %s %s.log", myTag, sdf.format(date));
+        logName = game ? String.format("Risk Game %s %s.log", myTag, sdf.format(date)) :
+                String.format("Simulation Results %s.log", sdf.format(date));
         File f = new File(logName);
         
-        System.out.printf("Running Simulation %s:\n", myTag);
+        if(!SUPRESS_TERMINAL)
+            System.out.printf("Running Simulation %s:\n", myTag);
         
         try {
             if(!f.exists())
@@ -38,7 +45,8 @@ public class Logger {
     }
     
     public static void log(String text){
-        System.out.println(text);
+        if(!SUPRESS_TERMINAL)
+            System.out.println(text);
         try {
             PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(logName, true)));
             out.println(text);

@@ -58,6 +58,7 @@ public class Game {
      * @return The Agent that won this game.
      */
     public Agent play(){
+        Logger.startLog();
         while(!isOver()){
             //Grab our next player.
             Agent a = players[playerIndex % 4];
