@@ -147,7 +147,10 @@ public class PlayerView implements InputProcessor{
                 case MOVING:
                     p = new Pixmap(Gdx.files.internal("Sprite/gauntletCursor.png"));
                     stateLabel.setText("Moving:");
-                    unitsLabel.setText("0 units");
+                    if (pendingForce == null)
+                        unitsLabel.setText("0 units");
+                    else
+                        unitsLabel.setText(pendingForce.getTroops() + " units");
                     break;
             }
             Gdx.input.setCursorImage(p, 0, 0);
@@ -293,7 +296,41 @@ public class PlayerView implements InputProcessor{
                             selectedTerritory = null;
                         }
                         break;
-                    case MOVING: 
+                    case MOVING:
+                        // First time selecting one of my territories
+                        if (t.getOwner() == playerAgent 
+                                && selectedTerritory == null
+                                && t.getNumTroops() > 1) {
+                            selectedTerritory = t;
+                            mapView.setSelectedTerritory(selectedTerritory);
+                            pendingForce = new Force(playerAgent, 0);
+                            if (t.getNumTroops() > 1)
+                                pendingForce.incrementTroops();
+                        }
+                        // Selecting my territory to choose more troops
+                        else if (t == selectedTerritory) {
+                            if (selectedTerritory.getNumTroops() > 1
+                                    && pendingForce.getTroops() != selectedTerritory.getNumTroops()-1)
+                                pendingForce.incrementTroops();
+                        }
+                        // Selecting nonadjacent territory
+                        else if (g.getBoard().isAdjacentTo(selectedTerritory, t) == false) {
+                            mapView.deselectTerritory(selectedTerritory);
+                            selectedTerritory = null;
+                            pendingForce = null;
+                        }
+                        // Selecting adjacent territory to move to
+                        else if (g.getBoard().isAdjacentTo(selectedTerritory, t)
+                                && t.getOwner() == playerAgent
+                                && pendingForce != null
+                                && pendingForce.getTroops() >= 1) {
+                            t.reinforce(pendingForce.getTroops());
+                            int attackingForceTroops = pendingForce.getTroops();
+                            selectedTerritory.setTroops(selectedTerritory.getNumTroops() - pendingForce.getTroops());
+                            pendingForce = null;
+                            mapView.deselectTerritory(selectedTerritory);
+                            selectedTerritory = null;
+                        }
                         break;
                 }
             }
