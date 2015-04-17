@@ -1,6 +1,6 @@
 package com.unbc.riskybusiness.agents;
 
-import com.unbc.riskybusiness.controllers.Game;
+import com.unbc.riskybusiness.controllers.GameController;
 
 /**
  * Base interface that all Agents will abide by to play the game. Allows for use of polymorphism to
@@ -15,7 +15,7 @@ public interface Agent {
      * 
      * @param g The Game this Agent is now playing.
      */
-    public void setGame(Game g);
+    public void setGame(GameController g);
     
     /**
      * The Agent decides how to distribute his reinforcements for phase one of his turn and then 

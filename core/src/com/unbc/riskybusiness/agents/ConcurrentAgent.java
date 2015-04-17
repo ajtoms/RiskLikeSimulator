@@ -1,6 +1,6 @@
 package com.unbc.riskybusiness.agents;
 
-import com.unbc.riskybusiness.controllers.Game;
+import com.unbc.riskybusiness.controllers.GameController;
 
 /**
  * This Agent is one that can carry on multiple games at once. It's purely a theoretical idea for 
@@ -31,7 +31,7 @@ public class ConcurrentAgent implements Agent{
     }
     
     @Override
-    public void setGame(Game g) {
+    public void setGame(GameController g) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 

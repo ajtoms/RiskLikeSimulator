@@ -1,6 +1,6 @@
 package com.unbc.riskybusiness.agents;
 
-import com.unbc.riskybusiness.controllers.Game;
+import com.unbc.riskybusiness.controllers.GameController;
 import com.unbc.riskybusiness.models.Board;
 import com.unbc.riskybusiness.models.Force;
 import com.unbc.riskybusiness.models.Territory;
@@ -20,7 +20,7 @@ public class BaseAgent implements Agent{
     
     private static int ID = 0;
     private int myId;
-    private Game gameInstance;
+    private GameController gameInstance;
     
     private ArrayList<Territory> potentialAttackers;
     
@@ -30,7 +30,7 @@ public class BaseAgent implements Agent{
     }
     
     @Override
-    public void setGame(Game g) {
+    public void setGame(GameController g) {
         this.gameInstance = g;
     }
     
@@ -44,7 +44,7 @@ public class BaseAgent implements Agent{
     @Override
     public void reinforce(int numReinforcements) {
         Board b = gameInstance.getBoard();
-        List<Territory> myLands = b.getAgentsTerritories(this);
+        List<Territory> myLands = null; //b.getAgentsTerritories(this);
         
         //For each of my territories, calculate the threat and find the one with the highest.
         int highestThreat = Integer.MIN_VALUE;
@@ -90,7 +90,7 @@ public class BaseAgent implements Agent{
         potentialAttackers.clear(); //Previous potentials might no longer be adjacent to an enemy
         
         //Look at all my territories. If it has enough troops to smack someone, it does.
-        for(Territory t : gameInstance.getBoard().getAgentsTerritories(this)){
+        for(Territory t : gameInstance.getBoard().getAgentsTerritories(null)){
             if(t.getNumTroops() > 1){
                 
                 //Check adjacent territories to see if we can do anything about it.

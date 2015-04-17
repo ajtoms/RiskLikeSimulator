@@ -1,7 +1,8 @@
 package com.unbc.riskybusiness.models;
 
+import com.unbc.riskybusiness.agents.AbstractAgent;
 import com.unbc.riskybusiness.agents.Agent;
-import com.unbc.riskybusiness.view.BoardLocation;
+import oldview.BoardLocation;
 
 /**
  * A Territory is one of the capturable spaces on the Board. It has a specific owner at all times,
@@ -14,8 +15,8 @@ public class Territory {
     private static int TERR_ID = 0;
     private int myId;
     private int troops;
-    private Agent owner;
-    BoardLocation myLoc;
+    private AbstractAgent owner;
+    String myLoc;
     
     /**
      * Initializes a Territory with the needed information. Initialized Territories will have no 
@@ -49,8 +50,7 @@ public class Territory {
             }
         }
         
-        String loc = cont + "" + terr;
-        myLoc = BoardLocation.valueOf(loc);
+        myLoc = cont + "" + terr;
     }
     
     /**
@@ -62,7 +62,7 @@ public class Territory {
      * @param owner The Agent to assign to the territory.
      * @param forces The number of troops he starts with on the territory.
      */
-    public void initialAssignment(Agent owner, int forces){
+    public void initialAssignment(AbstractAgent owner, int forces){
         this.owner = owner;
         this.troops = forces;
         inGameInvariant();      //A game has begun. Start enforcing the invariant.
@@ -146,7 +146,7 @@ public class Territory {
      * 
      * @return The Owner Agent of this Territory.
      */
-    public Agent getOwner(){
+    public AbstractAgent getOwner(){
         return owner;
     }
     
@@ -164,7 +164,7 @@ public class Territory {
      * 
      * @return As above.
      */
-    public BoardLocation getLocation(){
+    public String getLocationName(){
         return myLoc;
     }
     
@@ -198,4 +198,12 @@ public class Territory {
         return myLoc.toString();
     }
     
+    public void setTroops(int numTroops) {
+        this.troops = numTroops;
+    }
+    
+    public void changeOwner(Force f) {
+        this.owner = f.getOwner();
+        this.troops = f.getTroops();
+    }
 }

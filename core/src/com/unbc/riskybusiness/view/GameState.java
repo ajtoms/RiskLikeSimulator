@@ -10,5 +10,5 @@ package com.unbc.riskybusiness.view;
  * @author leefoster
  */
 public enum GameState {
-    START,BLUETURN,GOTBLUEMOVE,REDTURN,GOTREDTURN,END
+    
 }

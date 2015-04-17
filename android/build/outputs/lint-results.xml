@@ -13,7 +13,7 @@ Low density is not really used much anymore, so this check ignores the ldpi dens
         url="http://developer.android.com/guide/practices/screens_support.html"
         urls="http://developer.android.com/guide/practices/screens_support.html">
         <location
-            file="/Users/leefoster/Development/CPSC 495/RiskLikeSimulator/android/res"/>
+            file="/Users/leefoster/Development/RiskLikeSimulator/android/res"/>
     </issue>
 
 </issues>

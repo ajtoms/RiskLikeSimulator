@@ -1,0 +1,9 @@
+{
+  duplicatePadding: false,
+  paddingX: 1,
+  paddingY: 1
+  maxWidth: 2048,
+  maxHeight: 2048,
+  filterMin: Linear,
+  filterMag: Nearest
+}

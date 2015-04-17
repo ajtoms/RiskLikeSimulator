@@ -1,5 +1,6 @@
 package com.unbc.riskybusiness.models;
 
+import com.unbc.riskybusiness.agents.AbstractAgent;
 import com.unbc.riskybusiness.agents.Agent;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,6 +17,11 @@ public class Board {
 
     private Territory[][] territories;
     private HashMap<Territory, ArrayList<Territory>> adjacencies;
+
+    private int continentABonus;
+    private int continentBBonus;
+    private int continentCBonus;
+    private int continentDBonus;
     
     public Board(){
         territories = new Territory[4][4];
@@ -83,7 +89,10 @@ public class Board {
         adjacencies.get(territories[3][2]).add(territories[2][2]);
         adjacencies.get(territories[3][2]).add(territories[3][1]);
         
-        //Dear Lee: I'm sorry.
+        continentABonus = 1;
+        continentBBonus = 1;
+        continentCBonus = 1;
+        continentDBonus = 1;
     }
     
     /**
@@ -113,7 +122,7 @@ public class Board {
      * @param a The Agent to get the list of Territories from.
      * @return The List of Territories belonging to a given Agent.
      */
-    public List<Territory> getAgentsTerritories(Agent a){
+    public List<Territory> getAgentsTerritories(AbstractAgent a){
         List<Territory> ret = new ArrayList<Territory>();
         for (int x = 0; x < 4; x++) {
             for (int y = 0; y < 4; y++) {
@@ -146,7 +155,7 @@ public class Board {
      * @param a THe player in question.
      * @return The reinforcement bonus they get for owning a continent.
      */
-    public int continentBonusFor(Agent a){
+    public int continentBonusFor(AbstractAgent a){
         int ret = 0;
         boolean ownsA = territories[0][0].getOwner().equals(a) && 
                 territories[1][0].getOwner().equals(a) &&
@@ -166,13 +175,13 @@ public class Board {
                 territories[3][2].getOwner().equals(a);
         
         if(ownsA)
-            ret += 2;
+            ret += continentABonus;
         if(ownsB)
-            ret += 2;
+            ret += continentBBonus;
         if(ownsC)
-            ret += 2;
+            ret += continentCBonus;
         if(ownsD)
-            ret += 2;
+            ret += continentDBonus;
         
         return ret;
     }
@@ -191,4 +200,38 @@ public class Board {
         return ret;
     }
     
+    public void setContinentABonus(int continentABonus) {
+        this.continentABonus = continentABonus;
+    }
+
+    public void setContinentBBonus(int continentBBonus) {
+        this.continentBBonus = continentBBonus;
+    }
+
+    public void setContinentCBonus(int continentCBonus) {
+        this.continentCBonus = continentCBonus;
+    }
+
+    public void setContinentDBonus(int continentDBonus) {
+        this.continentDBonus = continentDBonus;
+    }
+    
+    public Territory getTerritoryNamed(String name) {
+        if (name == null)
+            return null;
+        for(int x = 0; x < 4; x++){
+            for (int y = 0; y < 4; y++) {
+                if (territories[x][y].myLoc.equals(name))
+                    return territories[x][y];
+            }
+        }
+        
+        return null;
+    }
+    
+    public boolean isAdjacentTo(Territory t1, Territory t2) {
+        if (t1 == null || t2 == null)
+            return false;
+        return adjacencies.get(t1).contains(t2);
+    }
 }

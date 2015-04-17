@@ -1,0 +1,330 @@
+{
+  com.badlogic.gdx.graphics.Color:
+  {
+	   green:
+     {
+       a: 1, b: 0, g: 1, r: 0
+     },
+	   white:
+     {
+       a: 1, b: 1, g: 1, r: 1
+     },
+	   red:
+     {
+       a: 1, b: 0, g: 0, r: 1
+     },
+	   black:
+     {
+       a: 1, b: 0, g: 0, r: 0
+     },
+     gray:
+     {
+       a:1, b:0.471, g:0.471, r:0.471
+     }
+  },
+  com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle:
+  {
+  	default:
+    {
+      font: default-font,
+      fontColor: gray
+    }
+    white:
+    {
+      font: default-font-big,
+      fontColor: white
+    }
+    white-small:{
+      font: default-font,
+      fontColor: white
+    }
+  },
+  com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle:
+  {
+  	plus:
+    {
+      up: HighResUI/plus_button
+    },
+  	minus:
+    {
+      up: HighResUI/minus_button
+    },
+    grayCheck:
+    {
+      up: HighResUI/gray_checked
+    }
+  },
+  com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle:
+  {
+	   blue:
+     {
+       down: blueDown,
+       up: blueUp,
+       over: blueOver,
+       font: default-font,
+       fontColor: gray
+     },
+     blueUI:
+     {
+       down: blueUp,
+       up: blueUp,
+       over: blueUp,
+       disabled: blueDown,
+       font: default-font,
+       fontColor: gray
+     },
+	   green:
+     {
+       down: greenDown,
+       up: greenUp,
+       over: greenOver,
+       font: default-font,
+       fontColor: gray
+     },
+     greenUI:
+     {
+       down: greenUp,
+       up: greenUp,
+       over: greenUp,
+       disabled: greenDown,
+       font: default-font,
+       fontColor: gray
+     },
+     gray:
+     {
+       down: grayDown,
+       up: grayUp,
+       over: grayOver,
+       font: default-font,
+       fontColor: gray
+     },
+     grayUI:
+     {
+       down: grayUp,
+       up: grayUp,
+       over: grayUp,
+       disabled: grayDown,
+       font: default-font,
+       fontColor: gray
+     },
+     red:
+     {
+       down: redDown,
+       up: redUp,
+       over: redOver,
+       font: default-font,
+       fontColor: gray
+     },
+     redUI:
+     {
+       down: redUp,
+       up: redUp,
+       over: redUp,
+       disabled:redDown,
+       font: default-font,
+       fontColor: gray
+     },
+     yellow:
+     {
+       down: yellowDown,
+       up: yellowUp,
+       over: yellowOver,
+       font: default-font,
+       fontColor: gray
+     },
+     yellowUI:
+     {
+       down: yellowUp,
+       up: yellowUp,
+       over: yellowUp,
+       disabled: yellowDown,
+       font: default-font,
+       fontColor: gray
+     }
+  },
+  com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
+  	blue:
+    {
+      checkboxOn: HighResUI/blue_checked,
+      checkboxOff: HighResUI/blue_checked
+      font: default-font,
+      fontColor: gray
+    },
+    red:
+    {
+      checkboxOn: HighResUI/red_checked,
+      checkboxOff: HighResUI/red_checked
+      font: default-font,
+      fontColor: gray
+    },
+    yellow:
+    {
+      checkboxOn: HighResUI/yellow_checked,
+      checkboxOff: HighResUI/yellow_unchecked
+      font: default-font,
+      fontColor: gray
+    },
+    green:
+    {
+      checkboxOn: HighResUI/green_checked,
+      checkboxOff: HighResUI/green_unchecked
+      font: default-font,
+      fontColor: gray
+    },
+    gray:
+    {
+      checkboxOn: HighResUI/gray_checked,
+      checkboxOff: HighResUI/gray_unchecked,
+      font: default-font,
+      fontColor: gray
+    }
+  },
+  com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
+    grayUp:
+    {
+      background: grayUp,
+      titleFont: default-font,
+      titleFontColor: white
+    },
+    grayDown:
+    {
+      background: grayDown,
+      titleFont: default-font,
+      titleFontColor: white
+    },
+    blueUp:
+    {
+      background: blueUp,
+      titleFont: default-font,
+      titleFontColor: white
+    },
+    blueDown:
+    {
+      background: blueDown,
+      titleFont: default-font,
+      titleFontColor: white
+    },
+    greenUp:
+    {
+      background: greenUp,
+      titleFont: default-font,
+      titleFontColor: white
+    },
+    greenDown:
+    {
+      background: greenDown,
+      titleFont: default-font,
+      titleFontColor: white
+    },
+    yellowUp:
+    {
+      background: yellowUp,
+      titleFont: default-font,
+      titleFontColor: white
+    },
+    yellowDown:
+    {
+      background: yellowDown,
+      titleFont: default-font,
+      titleFontColor: white
+    },
+    redUp:
+    {
+      background: redUp,
+      titleFont: default-font,
+      titleFontColor: white
+    },
+    redDown:
+    {
+      background: redDown,
+      titleFont: default-font,
+      titleFontColor: white
+    }
+  },
+  com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle:
+  {
+    default:
+    {
+      hScrollKnob: skin/default-round-large,
+      background: HighResUI/select-rect,
+      hScroll: skin/default-scroll,
+      vScrollKnob: skin/default-round-large
+    }
+  },
+  com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle:
+  {
+    default:
+    {
+      fontColorUnselected: gray,
+      selection: HighResUI/selected,
+      fontColorSelected: white,
+      font: default-font
+    }
+  },
+  com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle:
+  {
+  	green:
+    {
+  		font: default-font,
+      fontColor: gray,
+      disabledFontColor: white,
+      background: HighResUI/green_selectbox_up,
+      backgroundOpen: HighResUI/green_selectbox_down,
+      backgroundDisabled: HighResUI/gray_selectbox_up,
+      listStyle: default,
+  		scrollStyle: default
+  	},
+    red:
+    {
+      font: default-font,
+      fontColor: gray,
+      disabledFontColor: white,
+      background: HighResUI/red_selectbox_up,
+      backgroundOpen: HighResUI/red_selectbox_down,
+      backgroundDisabled: HighResUI/gray_selectbox_up,
+      listStyle: default,
+      scrollStyle: default
+    },
+    yellow:
+    {
+      font: default-font,
+      fontColor: gray,
+      disabledFontColor: white,
+      background: HighResUI/yellow_selectbox_up,
+      backgroundOpen: HighResUI/yellow_selectbox_down,
+      backgroundDisabled: HighResUI/gray_selectbox_up,
+      listStyle: default,
+      scrollStyle: default
+    },
+    blue:
+    {
+      font: default-font,
+      fontColor: gray,
+      disabledFontColor: white,
+      background: HighResUI/blue_selectbox_up,
+      backgroundOpen: HighResUI/blue_selectbox_down,
+      backgroundDisabled: HighResUI/gray_selectbox_up,
+      listStyle: default,
+      scrollStyle: default
+    }
+    gray:
+    {
+      font: default-font,
+      fontColor: gray,
+      background: HighResUI/gray_selectbox_up,
+      listStyle: default,
+      scrollStyle: default
+    }
+  },
+  com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle:
+  {
+  	default:
+    {
+      selection: HighResUI/select-rect,
+      background: HighResUI/textbox,
+      font: default-font,
+      fontColor: gray,
+      cursor: skin/cursor
+    }
+  }
+}
