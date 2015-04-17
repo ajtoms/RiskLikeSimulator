@@ -28,12 +28,17 @@
     {
       font: default-font,
       fontColor: gray
-    }
+    },
+    default-big:
+    {
+      font:default-font-big,
+      fontColor: gray
+    },
     white:
     {
       font: default-font-big,
       fontColor: white
-    }
+    },
     white-small:{
       font: default-font,
       fontColor: white

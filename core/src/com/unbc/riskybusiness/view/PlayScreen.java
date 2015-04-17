@@ -10,13 +10,14 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.input.GestureDetector.GestureListener;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.unbc.riskybusiness.controllers.GameController;
 
 /**
@@ -34,6 +35,8 @@ public class PlayScreen extends ScreenAdapter implements GestureListener, InputP
     private SpriteBatch spriteBatch;
     private MapView mapView;
     private Stage uiStage;
+    
+    private GameOverDialog gameOverDialog;
     
     public PlayScreen(GameController gameController, RiskLikeGame game) {
         this.gameController = gameController;
@@ -83,6 +86,7 @@ public class PlayScreen extends ScreenAdapter implements GestureListener, InputP
     public void render(float delta) {
         Gdx.gl.glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        
         mapView.render();
         
         bluePlayer.update(spriteBatch);
@@ -92,10 +96,38 @@ public class PlayScreen extends ScreenAdapter implements GestureListener, InputP
         
         spriteBatch.begin();
         uiStage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
+        if (gameController.isOver() && gameOverDialog == null) {
+            gameOverDialog = new GameOverDialog("", RiskLikeGame.getUiSkin(), "grayDown");
+            if (gameController.getWinner() == bluePlayer.getAgent())
+                gameOverDialog.setLabelText("Blue Player Wins!");
+            if (gameController.getWinner() == redPlayer.getAgent())
+                gameOverDialog.setLabelText("Red Player Wins!");
+            if (gameController.getWinner() == greenPlayer.getAgent())
+                gameOverDialog.setLabelText("Green Player Wins!");
+            if (gameController.getWinner() == yellowPlayer.getAgent())
+                gameOverDialog.setLabelText("Yellow Player Wins!");
+            gameOverDialog.setButton("Back", this);
+            gameOverDialog.show(uiStage);
+            Gdx.input.setCursorImage(null, 0, 0);
+        }
+        
         uiStage.draw();
         spriteBatch.end();
+        
     }
-
+    
+    @Override
+    public void dispose() {
+        gameController = null;
+        spriteBatch.dispose();
+        bluePlayer = null;
+        greenPlayer = null;
+        yellowPlayer = null;
+        redPlayer = null;
+        uiStage.dispose();
+        gameOverDialog = null;
+    }
+    
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
         return false;
@@ -180,4 +212,27 @@ public class PlayScreen extends ScreenAdapter implements GestureListener, InputP
         RiskLikeGame.setZoomLevel(amount);
         return true;
     }
+    
+    private class GameOverDialog extends Dialog {
+        
+        public GameOverDialog(String title, Skin skin, String windowStyleName) {
+            super(title, skin, windowStyleName);
+        }
+        
+        protected void setButton(String buttonText, PlayScreen screen) {
+            button(buttonText, screen, RiskLikeGame.getUiSkin().get("gray", TextButtonStyle.class));
+        }
+        
+        protected void setLabelText(String labelText) {
+            text(labelText).center().padLeft(10).padRight(10);
+        }
+        
+        @Override
+        protected void result(Object object) {
+            PlayScreen screen = (PlayScreen) object;
+            screen.game.setScreen(new SetupScreen(game));
+        }
+        
+    }
+
 }

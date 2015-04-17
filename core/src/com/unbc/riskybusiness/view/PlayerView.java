@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.unbc.riskybusiness.agents.AbstractAgent;
@@ -98,6 +99,9 @@ public class PlayerView implements InputProcessor{
     }
 
     public void update(Batch batch) {
+        if (playerAgent == null)
+            return;
+        
         batch.begin();
         /* Update where the pieces are and draw them */
         for (Territory t : g.getBoard().getAgentsTerritories(playerAgent)) {
@@ -113,7 +117,12 @@ public class PlayerView implements InputProcessor{
         int percentControlled = g.getPercentControlled(playerAgent); 
         percentControlledLabel.setText(percentControlled + "%");
         
-        if (g.getAgentTakingTurn() == playerAgent) {
+        if (playerAgent.isDead()) {
+            uiWindow.setStyle(RiskLikeGame.getDeactiveWindowStyle(null));
+            agentNameLabel.setStyle(RiskLikeGame.getUiSkin().get("default-big", LabelStyle.class));
+            percentControlledLabel.setStyle(RiskLikeGame.getUiSkin().get("default", LabelStyle.class));
+        }
+        else if (g.getAgentTakingTurn() == playerAgent) {
             uiWindow.setStyle(RiskLikeGame.getActiveWindowStyle(color));
             doneStateButton.setVisible(true);
             doneStateButton.setDisabled(false);
@@ -182,40 +191,19 @@ public class PlayerView implements InputProcessor{
     // Only enabled on this players turn and if it is human.  Called when
     // the check box is clicked.
     public void setNextPlayerState() {
+        mapView.deselectTerritory(selectedTerritory);
+        selectedTerritory = null;
+        pendingForce = null;
         switch (g.getCurrentState()) {
             case REINFORCING:
-                System.out.println("Clicked! Setting done reinforcing");
                 playerAgent.setDoneReinforcing();
                 break;
             case ATTACKING: 
-                System.out.println("Clicked! Setting done attacking");
                 playerAgent.setDoneAttacking();
                 break;
             case MOVING:
-                System.out.println("Clicked! Setting done moving");
                 playerAgent.setDoneMoving();
                 break;
-        }
-    }
-    
-    private class PieceView extends Sprite {
-        private String units;
-        
-        public PieceView (int units, Texture t) {
-            super(new Sprite(t));
-            setTexture(t);
-            setSize(this.getWidth() * RiskLikeGame.getScale() * 1.2f, 
-                    this.getHeight() * RiskLikeGame.getScale() * 1.2f);
-            this.units = units+"";
-        }
-        
-        @Override
-        public void draw(Batch batch) {
-            super.draw(batch);
-            RiskLikeGame.getFont().setColor(1.0f, 1.0f, 1.0f, 1.0f);
-            float x = (getX()+getWidth()*0.5f) - RiskLikeGame.getFont().getBounds(units).width * 0.5f;
-            float y = getY()+getHeight()*0.5f;
-            RiskLikeGame.getFont().draw(batch, units, x , y);
         }
     }
     
@@ -262,7 +250,9 @@ public class PlayerView implements InputProcessor{
                         break;
                     case ATTACKING:
                         // First time selecting one of my territories
-                        if (t.getOwner() == playerAgent && selectedTerritory == null) {
+                        if (t.getOwner() == playerAgent 
+                                && selectedTerritory == null
+                                && t.getNumTroops() > 1) {
                             selectedTerritory = t;
                             mapView.setSelectedTerritory(selectedTerritory);
                             pendingForce = new Force(playerAgent, 0);
@@ -283,21 +273,24 @@ public class PlayerView implements InputProcessor{
                         }
                         // Selecting adjacent enemy territory to attack
                         else if (g.getBoard().isAdjacentTo(selectedTerritory, t)
-                                && t.getOwner() != playerAgent) {
+                                && t.getOwner() != playerAgent
+                                && pendingForce != null
+                                && pendingForce.getTroops() >= 1) {
+                            int attackingForceTroops = pendingForce.getTroops();
                             Force enemyForce = new Force(t.getOwner(), t.getNumTroops());
                             Force resultingForce = pendingForce.attack(enemyForce);
+                            selectedTerritory.setTroops(selectedTerritory.getNumTroops() - attackingForceTroops);
                             // I won
                             if (resultingForce.getOwner() == playerAgent) {
-                                int remainingTroops = selectedTerritory.getNumTroops() - pendingForce.getTroops();
-                                selectedTerritory.setTroops(remainingTroops);
                                 t.changeOwner(resultingForce);
                             }
                             // They won
                             else {
-                                int remainingTroops = t.getNumTroops() - resultingForce.getTroops();
-                                t.setTroops(remainingTroops);
-                                selectedTerritory.setTroops(selectedTerritory.getNumTroops() - pendingForce.getTroops());
+                                t.setTroops(enemyForce.getTroops());
                             }
+                            pendingForce = null;
+                            mapView.deselectTerritory(selectedTerritory);
+                            selectedTerritory = null;
                         }
                         break;
                     case MOVING: 
@@ -328,5 +321,30 @@ public class PlayerView implements InputProcessor{
     @Override
     public boolean scrolled(int amount) {
         return false;
+    }
+    
+    private class PieceView extends Sprite {
+        private String units;
+        
+        public PieceView (int units, Texture t) {
+            super(new Sprite(t));
+            setTexture(t);
+            setSize(this.getWidth() * RiskLikeGame.getScale() * 1.2f, 
+                    this.getHeight() * RiskLikeGame.getScale() * 1.2f);
+            this.units = units+"";
+        }
+        
+        @Override
+        public void draw(Batch batch) {
+            super.draw(batch);
+            RiskLikeGame.getFont().setColor(1.0f, 1.0f, 1.0f, 1.0f);
+            float x = (getX()+getWidth()*0.5f) - RiskLikeGame.getFont().getBounds(units).width * 0.5f;
+            float y = getY()+getHeight()*0.5f;
+            RiskLikeGame.getFont().draw(batch, units, x , y);
+        }
+    }
+    
+    public AbstractAgent getAgent() {
+        return playerAgent;
     }
 }

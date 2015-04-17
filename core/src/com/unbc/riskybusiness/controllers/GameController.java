@@ -17,7 +17,7 @@ import java.util.Random;
  * @author Andrew J Toms II
  */
 public class GameController {
-    
+
     public enum STATE {SET_NEXT_PLAYER, REINFORCING, ATTACKING, MOVING, DONE_GAME};
     
     private int playerIndex;    //The integer index of the current player.
@@ -80,6 +80,7 @@ public class GameController {
     public AbstractAgent play(){
         currentState = STATE.SET_NEXT_PLAYER;
         while(currentState != STATE.DONE_GAME){
+            setDeadAgents();
             switch (currentState) {
                 case SET_NEXT_PLAYER:
                     if (isOver()) {
@@ -87,27 +88,23 @@ public class GameController {
                     }
                         
                     currentPlayer = players[playerIndex % this.players.length];
-                    
-                    if (board.getAgentsTerritories(currentPlayer).isEmpty()) {
-                        currentPlayer.setDead();
+                    if (currentPlayer.isDead()) {
                         playerIndex++;
                         break;
                     }
+
                     currentPlayer.setTakingTurn();
-                    System.out.println("Switching to reinforcing");
                     currentState = STATE.REINFORCING;
                     currentPlayer.startReinforcing(unitsPerTurn + board.continentBonusFor(currentPlayer));
                     break;
                 case REINFORCING:
                     if (!currentPlayer.isReinforcing()) {
-                        System.out.println("Switching to attacking");
                         currentState = STATE.ATTACKING;
                         currentPlayer.startAttacking();
                     }
                     break;
                 case ATTACKING:
                     if (!currentPlayer.isAttacking()) {
-                        System.out.println("Switching to moving");
                         currentState = STATE.MOVING;
                         currentPlayer.startMoving();
                     }
@@ -126,6 +123,15 @@ public class GameController {
         AbstractAgent victor = board.getTerritory(0, 0).getOwner();
         Logger.log(String.format("The winner is %s", victor));
         return victor;
+    }
+    
+    // Checks to see if any agents are dead and sets their isDead flag
+    private void setDeadAgents() {
+        for (AbstractAgent player : players) {
+            if (board.getAgentsTerritories(player).isEmpty()) {
+                player.setDead();
+            }
+        }
     }
     
     /**
@@ -269,5 +275,15 @@ public class GameController {
     
     public STATE getCurrentState() {
         return currentState;
+    }
+    
+    public AbstractAgent getWinner() {
+        if (isOver()) {
+            for (AbstractAgent a: players) {
+                if (getPercentControlled(a) >= percentToWin)
+                    return a;
+            }
+        }
+        return null;
     }
 }
