@@ -4,7 +4,7 @@
 /android/build/
 /sdk/
 /local.properties
-/.nb-gradle/private/
+/.nb-gradle/
 /nbproject/
 desktop/src/com/unbc/riskybusiness/desktop/Derp.java
 
