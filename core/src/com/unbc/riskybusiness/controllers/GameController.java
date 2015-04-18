@@ -1,7 +1,6 @@
 package com.unbc.riskybusiness.controllers;
 
-import com.unbc.riskybusiness.agents.AbstractAgent;
-import com.unbc.riskybusiness.agents.Agent;
+import com.unbc.riskybusiness.agents.BaseAgent;
 import com.unbc.riskybusiness.main.Logger;
 import com.unbc.riskybusiness.models.Board;
 import com.unbc.riskybusiness.models.Territory;
@@ -21,8 +20,8 @@ public class GameController {
     public enum STATE {SET_NEXT_PLAYER, REINFORCING, ATTACKING, MOVING, DONE_GAME};
     
     private int playerIndex;    //The integer index of the current player.
-    private AbstractAgent[] players;
-    private AbstractAgent currentPlayer;
+    private BaseAgent[] players;
+    private BaseAgent currentPlayer;
     private int[] territoriesOwned;
     private Board board;
     private STATE currentState;
@@ -40,8 +39,8 @@ public class GameController {
      * @param player3
      * @param player4
      */
-    public GameController(AbstractAgent player1, AbstractAgent player2, AbstractAgent player3, AbstractAgent player4){
-        ArrayList<AbstractAgent> notNullAgents = new ArrayList<AbstractAgent>();
+    public GameController(BaseAgent player1, BaseAgent player2, BaseAgent player3, BaseAgent player4){
+        ArrayList<BaseAgent> notNullAgents = new ArrayList<BaseAgent>();
         if (player1 != null)
             notNullAgents.add(player1);
         if (player2 != null)
@@ -51,10 +50,17 @@ public class GameController {
         if (player4 != null)
             notNullAgents.add(player4);
         
-        this.playerIndex = 0;
-        this.players = (AbstractAgent[]) notNullAgents.toArray(new AbstractAgent[notNullAgents.size()]);
-        this.territoriesOwned = new int[]{4,4,4,4};
-        this.board = new Board();
+        playerIndex = 0;
+        players = (BaseAgent[]) notNullAgents.toArray(new BaseAgent[notNullAgents.size()]);
+        board = new Board();
+        
+        if (players.length == 4)
+            territoriesOwned = new int[] {4,4,4,4};
+        else if (players.length == 3)
+            territoriesOwned = new int[] {6,5,5};
+        else
+            territoriesOwned = new int[] {8,8};
+            
         
         //Boards don't know what players are so we will assign territories from the board to the 
         //players now.
@@ -77,8 +83,8 @@ public class GameController {
      * 
      * @return The Agent that won this game.
      */
-    public AbstractAgent play(){
-        for (AbstractAgent a : players)
+    public BaseAgent play(){
+        for (BaseAgent a : players)
             a.setGameController(this);
         currentState = STATE.SET_NEXT_PLAYER;
         while(currentState != STATE.DONE_GAME){
@@ -122,14 +128,15 @@ public class GameController {
         }
         
         //The winner is the owner of all territories.
-        AbstractAgent victor = board.getTerritory(0, 0).getOwner();
+        BaseAgent victor = board.getTerritory(0, 0).getOwner();
         Logger.log(String.format("The winner is %s", victor));
+        Logger.logVictory(victor);
         return victor;
     }
     
     // Checks to see if any agents are dead and sets their isDead flag
     private void setDeadAgents() {
-        for (AbstractAgent player : players) {
+        for (BaseAgent player : players) {
             if (board.getAgentsTerritories(player).isEmpty()) {
                 player.setDead();
             }
@@ -152,7 +159,7 @@ public class GameController {
      * @return True if the game is over, else false.
      */
     public boolean isOver(){
-        for (AbstractAgent a: players) {
+        for (BaseAgent a: players) {
             if (getPercentControlled(a) >= percentToWin)
                 return true;
         }
@@ -160,7 +167,7 @@ public class GameController {
 
     }
     
-    public void logChanges(AbstractAgent active){
+    public void logChanges(BaseAgent active){
         //Precondition, we know an attack just happened. Find out what went down.
         if(board.getAgentsTerritories(active).size() > territoriesOwned[playerIndex % players.length]){
             
@@ -168,7 +175,7 @@ public class GameController {
             territoriesOwned[playerIndex % players.length] += 1;
             
             //In this block we are guaranteed that a territory exchanged hands
-            AbstractAgent loser = null;
+            BaseAgent loser = null;
             List<Territory> loserLands = null;
             for(int i = 0; i < players.length && loser == null; i++){
                 //By virtue of the fact that this player is the winner we know it isn't the loser.
@@ -176,7 +183,7 @@ public class GameController {
                     continue;
                 
                 //The loser will have one less territory than we remembered.
-                AbstractAgent a = players[i];
+                BaseAgent a = players[i];
                 List<Territory> aLands = board.getAgentsTerritories(a);
                 if(aLands.size() < territoriesOwned[i]){
                     loser = a;
@@ -207,7 +214,7 @@ public class GameController {
         board.setContinentDBonus(d);
     }
     
-    public int getPercentControlled (AbstractAgent a) {
+    public int getPercentControlled (BaseAgent a) {
         float percentControlled = 0;
         List<Territory> controlledTerritories = board.getAgentsTerritories(a);
         List<Territory> allTerritories = board.getAllTerritories();
@@ -215,7 +222,7 @@ public class GameController {
         return (int) percentControlled;
     }
     
-    public AbstractAgent[] getPlayers() {
+    public BaseAgent[] getPlayers() {
         return players;
     }
     
@@ -255,23 +262,23 @@ public class GameController {
         }
     }
     
-    public AbstractAgent getPlayer1() {
+    public BaseAgent getPlayer1() {
         return hasPlayer1() ? players[0] : null;
     }
     
-    public AbstractAgent getPlayer2() {
+    public BaseAgent getPlayer2() {
         return hasPlayer2() ? players[1] : null;
     }
     
-    public AbstractAgent getPlayer3() {
+    public BaseAgent getPlayer3() {
         return hasPlayer3() ? players[2] : null;
     }
     
-    public AbstractAgent getPlayer4() {
+    public BaseAgent getPlayer4() {
         return hasPlayer4() ? players[3] : null;
     }
     
-    public AbstractAgent getAgentTakingTurn() {
+    public BaseAgent getAgentTakingTurn() {
         return currentPlayer;
     }
     
@@ -279,9 +286,9 @@ public class GameController {
         return currentState;
     }
     
-    public AbstractAgent getWinner() {
+    public BaseAgent getWinner() {
         if (isOver()) {
-            for (AbstractAgent a: players) {
+            for (BaseAgent a: players) {
                 if (getPercentControlled(a) >= percentToWin)
                     return a;
             }

@@ -1,153 +1,165 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.unbc.riskybusiness.agents;
 
 import com.unbc.riskybusiness.controllers.GameController;
-import com.unbc.riskybusiness.models.Board;
+import com.unbc.riskybusiness.main.Logger;
 import com.unbc.riskybusiness.models.Force;
 import com.unbc.riskybusiness.models.Territory;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
- * A basic implementation of an Agent class, programmed with a trivial knowledge of minimal strategy
- * required to make decisions. Intended to be used as a control Agent when testing other Agent 
- * classes out in experiments.
- * 
- * @author Andrew J Toms II
+ *
+ * @author leefoster
  */
-public class BaseAgent implements Agent{
-
-    private int stub = 0;
+public abstract class BaseAgent {
     
-    private static int ID = 0;
-    private int myId;
-    private GameController gameInstance;
+    protected static int ID = 0;
+    protected int myId;
     
-    private ArrayList<Territory> potentialAttackers;
+    protected boolean takingTurn;
+    protected boolean finishedTurn;
+    protected boolean isReinforcing;
+    protected boolean isAttacking;
+    protected boolean isMoving;
+    protected boolean isDead;
+    protected int reinforcementsToPlace;
+    protected GameController gameController;
     
-    public BaseAgent(){
-        myId = ID++;
-        potentialAttackers = new ArrayList<Territory>();
+    // Used by GUI to show what territory this agent is dealing with
+    protected Territory selectedTerritory;
+    
+    // Used by GUI to show how many forces the adgent is moving or attacking
+    protected Force pendingForce;
+    
+    public BaseAgent() {
+        this.myId = ID++;
     }
     
-    @Override
-    public void setGame(GameController g) {
-        this.gameInstance = g;
-    }
     
-    /**
-     * The Base Agent Reinforcement Strategy is this: Look at all of my territories. Calculate the 
-     * difference between all adjacent enemy territories to each of my territories. The one with the
-     * highest difference is the territory where I will place all my troops.
-     * 
-     * @param numReinforcements The number of reinforcements I get.
-     */
-    @Override
-    public void reinforce(int numReinforcements) {
-        Board b = gameInstance.getBoard();
-        List<Territory> myLands = null; //b.getAgentsTerritories(this);
-        
-        //For each of my territories, calculate the threat and find the one with the highest.
-        int highestThreat = Integer.MIN_VALUE;
-        Territory threatened = null;
-        for(Territory t : myLands){
-            //Threat is sum of adjacent enemy troops
-            int threat = 0;
-            List<Territory> adjs = b.getAdjacentTerritories(t);
-            for(Territory adj : adjs){
-                if(!adj.getOwner().equals(this)){   //This is an enemy
-                    threat += adj.getNumTroops();
-                }
-            }
+    public int getReinforcements() {
+        return reinforcementsToPlace;
+    }
             
-            //Are we the most threatened territory?
-            if(threat > highestThreat){
-                highestThreat = threat;
-                threatened = t;
-            }
-        }
-        
-        //If none of my territories are surrounded by enemy territories, then I have no preference
-        //for reinforcement
-        if(threatened == null)
-            myLands.get(0).reinforce(numReinforcements);
-        
-        //After loooking for all threatened territories, the one with the highest will get my troops
-        //Netbeans says this is dereferencing a possible null pointer; it isn't though, assuming we
-        //have territories in myLands, which we always should have
-        threatened.reinforce(numReinforcements);
-    }
-
-    /**
-     * A Base Agent's attack strategy is attack whenever he physically can.
-     * 
-     * @return True if the Agent has a territory that is adjacent to enemy territory with enough 
-     * troops (>1) to attack it.
-     */
-    @Override
-    public boolean wantsToAttack() {
-        boolean ret = false;
-        
-        potentialAttackers.clear(); //Previous potentials might no longer be adjacent to an enemy
-        
-        //Look at all my territories. If it has enough troops to smack someone, it does.
-        for(Territory t : gameInstance.getBoard().getAgentsTerritories(null)){
-            if(t.getNumTroops() > 1){
-                
-                //Check adjacent territories to see if we can do anything about it.
-                List<Territory> adjs = gameInstance.getBoard().getAdjacentTerritories(t);
-                for(Territory adj : adjs){
-                    //Record a boolean so we don't need to call it twice;
-                    boolean yes = !adj.getOwner().equals(this);
-                    
-                    //If we can attack with this territory, yes will be true, throw this Territory
-                    //in the list of potential attackers if it isn't already in there.
-                    if(yes){
-                        if(!potentialAttackers.contains(t)){
-                            potentialAttackers.add(t);
-                        }
-                    }
-                    ret |= yes; //Ret will be set to true and can't be unset if even 1 t can attack
-                }
-            }
-        }
-        
-        return ret;
-    }
-
-    /**
-     * Takes a potential attacker, finds the weakest adjacent enemy and smash it!
-     */
-    @Override
-    public void attack() {
-        //Grab an attacker.
-        Territory attacker = potentialAttackers.remove(0);
-        
-        //Find the weakest adjacent territory
-        int victimStrength = Integer.MAX_VALUE;
-        Territory victim = null;
-        List<Territory> adjs = gameInstance.getBoard().getAdjacentTerritories(attacker);
-        for(Territory adj : adjs){
-            if(adj.getNumTroops() < victimStrength && !adj.getOwner().equals(this)){
-                victim = adj;
-                victimStrength = adj.getNumTroops();
-            }
-        }
-        
-        //Resolve the Attack by building forces and settle the winner in Victim's land
-        Force atkForce = attacker.buildForce(attacker.getNumTroops() - 1);
-        Force defForce = victim.buildForce(victimStrength);  //Guaranteed not null
-        Force winner = atkForce.attack(defForce);
-        victim.settleForce(winner);
-    }
-
-    @Override
-    public void tacticalMove() {
-        //TODO: Give it a slightly less dumb tactical strat
+    public Territory getSelectedTerritory() {
+        return selectedTerritory;
     }
     
-    @Override
-    public String toString(){
-        return String.format("Base Agent %d", myId);
+    public Force getPendingForce() {
+        return pendingForce;
     }
     
+    public boolean isTakingTurn() {
+        return takingTurn;
+    }
+    
+    public boolean isReinforcing() {
+        return isReinforcing;
+    }
+    
+    public boolean isAttacking() {
+        return isAttacking;
+    }
+    
+    public boolean isMoving() {
+        return isMoving;
+    }
+    
+    public boolean isDoneTakingTurn() {
+        pendingForce = null;
+        selectedTerritory = null;
+        return finishedTurn;
+    }
+    
+    public boolean isDead() {
+        return isDead;
+    }
+    
+    public void doneTurn() {
+        gameController.logChanges(this);
+        Logger.log(String.format("%s is finished their turn.", this));
+        takingTurn = false;
+        finishedTurn = false;
+        isReinforcing = false;
+        isAttacking = false;
+        isMoving = false;
+    }
+    
+    public void setSelectedTerritory(Territory selectedTerritory) {
+        this.selectedTerritory = selectedTerritory;
+    }
+    
+    public void setPendingForce(Force f) {
+        pendingForce = f;
+    }
+    
+    public void setGameController(GameController gameController) {
+        this.gameController = gameController;
+    }
+    
+    public void setTakingTurn() {
+        Logger.log(String.format("%s begins their turn.", this));
+        takingTurn = true;
+        finishedTurn = false;
+        isReinforcing = false;
+        isAttacking = false;
+        isMoving = false;
+    }
+    
+    public void setDead() {
+        if (!isDead) {
+            Logger.log(String.format("%s has died.", this));
+            isDead = true;
+        }
+    }
+    
+    public void setDoneMoving() {
+        Logger.log(String.format("%s is done tactical moving.", this));
+        pendingForce = null;
+        selectedTerritory = null;
+        isMoving = false;
+    }
+    
+    public void setDoneAttacking() {
+        Logger.log(String.format("%s is done attacking.", this));
+        pendingForce = null;
+        selectedTerritory = null;
+        isAttacking = false;
+    }
+    
+    public void setDoneReinforcing() {
+        Logger.log(String.format("%s is done reinforcing.", this));
+        pendingForce = null;
+        selectedTerritory = null;
+        isReinforcing = false;
+    }
+    
+    public void sleep() {
+        try {
+            Thread.sleep(gameController.aiDelaySeconds * 1000);
+        }
+        catch (Exception e) {
+
+        }
+    }
+    
+    public void startReinforcing(int reinforcments) {
+        Logger.log(String.format("%s gets %d reinforcements.", this, reinforcments));
+        isReinforcing = true;
+        this.reinforcementsToPlace = reinforcments;
+    }
+
+    public void startAttacking() {
+        Logger.log(String.format("%s will now attack.", this));
+        isAttacking = true;
+    }
+
+    public void startMoving() {
+        Logger.log(String.format("%s is done attacking and makes a tactical move.", this));
+        isMoving = true;
+    }
+
+
 }

@@ -1,5 +1,11 @@
 package com.unbc.riskybusiness.main;
 
+import com.unbc.riskybusiness.agents.BaseAgent;
+import com.unbc.riskybusiness.agents.HumanAgent;
+import com.unbc.riskybusiness.agents.RandomAgent;
+import com.unbc.riskybusiness.controllers.GameController;
+import com.unbc.riskybusiness.controllers.GameController.STATE;
+import com.unbc.riskybusiness.models.Board;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -8,6 +14,7 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
+import java.util.Scanner;
 
 /**
  * A Class that prints to System.out while simultaneously appending to a log File.
@@ -70,5 +77,33 @@ public class Logger {
             chars[i] = (char) (65 + r.nextInt(26));
         }
         return String.copyValueOf(chars);
+    }
+
+    public static void logVictory(BaseAgent agentClass) {
+        String className = "";
+        if (agentClass instanceof HumanAgent)
+            className = "HumanAgent";
+        if (agentClass instanceof RandomAgent)
+            className = "RandomAgent";
+        File f = new File(className+"Wins.log");
+        try {
+            if(!f.exists()) {
+                f.createNewFile();
+                PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(f, true)));
+                out.println(1);
+                out.close();
+            }
+            else {
+                Scanner s = new Scanner(f);
+                int numWins = s.nextInt();
+                numWins++;
+                s.close();
+                PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(f, false)));
+                out.println(numWins);
+                out.close();
+            }
+        } catch (IOException ex) {
+            System.out.println("Couldn't create Log File!");
+        }
     }
 }

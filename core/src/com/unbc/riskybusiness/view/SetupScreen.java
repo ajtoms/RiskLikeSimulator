@@ -26,7 +26,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
-import com.unbc.riskybusiness.agents.AbstractAgent;
+import com.unbc.riskybusiness.agents.BaseAgent;
 import com.unbc.riskybusiness.agents.HumanAgent;
 import com.unbc.riskybusiness.agents.RandomAgent;
 import com.unbc.riskybusiness.controllers.GameController;
@@ -505,11 +505,24 @@ public class SetupScreen extends ScreenAdapter {
     }
     
     private void startSimulation() {
-        Logger.startLog();
-        AbstractAgent blueAgent = getAgent(blueAgentSelect.getSelected());
-        AbstractAgent redAgent = getAgent(redAgentSelect.getSelected());
-        AbstractAgent greenAgent = (greenCheckBox.isChecked()) ? getAgent(greenAgentSelect.getSelected()):null;
-        AbstractAgent yellowAgent = (yellowCheckBox.isChecked()) ? getAgent(yellowAgentSelect.getSelected()):null;
+        if (guiEnabledBox.isChecked()) {
+            playGame(true);
+        }
+        else {
+            int gamesToPlay = Integer.parseInt(gamesToRunField.getText());
+            for (int i = 0; i < gamesToPlay; i++) {
+                playGame(false);
+                System.out.println("Game " + (i+1) + " finished");
+            }
+            System.out.print("Done Running Simulations");
+        }
+    }
+
+    private void playGame(boolean guiEnabled) {
+        BaseAgent blueAgent = getAgent(blueAgentSelect.getSelected());
+        BaseAgent redAgent = getAgent(redAgentSelect.getSelected());
+        BaseAgent greenAgent = (greenCheckBox.isChecked()) ? getAgent(greenAgentSelect.getSelected()):null;
+        BaseAgent yellowAgent = (yellowCheckBox.isChecked()) ? getAgent(yellowAgentSelect.getSelected()):null;
         
         GameController g = new GameController(blueAgent, redAgent, greenAgent, yellowAgent);
         g.setContinentBonuses(Integer.parseInt(continentAField.getText()), 
@@ -521,16 +534,15 @@ public class SetupScreen extends ScreenAdapter {
         g.unitsPerTurn = Integer.parseInt(unitsPerTurnField.getText());
         g.startingUnits = Integer.parseInt(startingUnitsField.getText());
         g.aiDelaySeconds = Integer.parseInt(aiDelayField.getText());
-        
-        if (guiEnabledBox.isChecked()) {
+        Logger.startLog();
+        if (guiEnabled)
             game.setScreen(new PlayScreen(g, game));
-        }
-        else {
+        else
             g.play();
-        }
     }
-
-    private AbstractAgent getAgent(String agentName) {
+    
+    
+    private BaseAgent getAgent(String agentName) {
         if (agentName.equals("Human"))
             return new HumanAgent();
         if (agentName.equals("Random"))

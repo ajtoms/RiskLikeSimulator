@@ -1,7 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Agent with Aggresive Random behaviour.
+ * Reinforcments: Randomly picks spots to reinforce
+ * Attacking: Will attack always if there is one.  If multiple attacks are possible it will randomly choose one.
+ * Moving: Picks a spot it controls and moves a random number to a random adjacent spot.
  */
 package com.unbc.riskybusiness.agents;
 
@@ -15,12 +16,12 @@ import java.util.Random;
  *
  * @author leefoster
  */
-public class RandomAgent extends AbstractAgent {
+public class RandomAgent extends BaseAgent {
 
     @Override
     public void startReinforcing(int reinforcments) {
-        isReinforcing = true;
-        this.reinforcementsToPlace = reinforcments;
+        super.startReinforcing(reinforcments);
+        
         List<Territory> myTerritories = gameController.getBoard().getAgentsTerritories(this);
         Random r = new Random();
         for (int i = 0; i < reinforcments; i++) {
@@ -36,14 +37,11 @@ public class RandomAgent extends AbstractAgent {
 
     @Override
     public void startAttacking() {
-        isAttacking = true;
+        super.startAttacking();
         
         List<Territory> myTerritories = gameController.getBoard().getAgentsTerritories(this);
         Random r = new Random();
         
-        /* Go through each territory owned and if there is an adjacent enemy
-           one randomly decide to attack it or not with a random amount of troops
-        */
         for (Territory myTerritory : myTerritories) {
             List<Territory> enemyTerritories = getAdjacentEnemyTerritories(myTerritory);
             if (enemyTerritories.size() > 0) {
@@ -74,7 +72,7 @@ public class RandomAgent extends AbstractAgent {
 
     @Override
     public void startMoving() {
-        isMoving = true;
+        super.startMoving();
         
         Random r = new Random();
         List<Territory> myTerrirotires = gameController.getBoard().getAgentsTerritories(this);
@@ -91,11 +89,6 @@ public class RandomAgent extends AbstractAgent {
             }
         }
         setDoneMoving();
-    }
-
-    @Override
-    public String toString() {
-        return "Random";
     }
 
     private synchronized List<Territory> getAdjacentEnemyTerritories(Territory terriroty) {
@@ -118,5 +111,10 @@ public class RandomAgent extends AbstractAgent {
             }
         }
         return ownedByMe;
+    }
+        
+    @Override
+    public String toString() {
+        return "Random"+myId;
     }
 }

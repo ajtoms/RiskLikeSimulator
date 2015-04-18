@@ -20,7 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.unbc.riskybusiness.agents.AbstractAgent;
+import com.unbc.riskybusiness.agents.BaseAgent;
 import com.unbc.riskybusiness.agents.HumanAgent;
 import com.unbc.riskybusiness.controllers.GameController;
 import com.unbc.riskybusiness.models.Force;
@@ -35,7 +35,7 @@ public class PlayerView implements InputProcessor{
     public enum COLOR { BLUE, YELLOW, RED, GREEN };
 
     private COLOR color;
-    private AbstractAgent playerAgent;
+    private BaseAgent playerAgent;
     private HumanAgent humanAgent;
     private GameController g;
     private MapView mapView;
@@ -47,7 +47,7 @@ public class PlayerView implements InputProcessor{
     private Label doneLabel;
     private Button doneStateButton;
     
-    public PlayerView(COLOR color, AbstractAgent playerAgent, Stage stage, MapView mapView, GameController g) {
+    public PlayerView(COLOR color, BaseAgent playerAgent, Stage stage, MapView mapView, GameController g) {
         this.color = color;
         this.playerAgent = playerAgent;
         if (playerAgent instanceof HumanAgent )
@@ -393,7 +393,7 @@ public class PlayerView implements InputProcessor{
         }
     }
     
-    public AbstractAgent getAgent() {
+    public BaseAgent getAgent() {
         return playerAgent;
     }
 }

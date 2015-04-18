@@ -1,8 +1,6 @@
 package com.unbc.riskybusiness.models;
 
-import com.unbc.riskybusiness.agents.AbstractAgent;
-import com.unbc.riskybusiness.agents.Agent;
-import oldview.BoardLocation;
+import com.unbc.riskybusiness.agents.BaseAgent;
 
 /**
  * A Territory is one of the capturable spaces on the Board. It has a specific owner at all times,
@@ -15,7 +13,7 @@ public class Territory {
     private static int TERR_ID = 0;
     private int myId;
     private int troops;
-    private AbstractAgent owner;
+    private BaseAgent owner;
     String myLoc;
     
     /**
@@ -62,7 +60,7 @@ public class Territory {
      * @param owner The Agent to assign to the territory.
      * @param forces The number of troops he starts with on the territory.
      */
-    public void initialAssignment(AbstractAgent owner, int forces){
+    public void initialAssignment(BaseAgent owner, int forces){
         this.owner = owner;
         this.troops = forces;
         inGameInvariant();      //A game has begun. Start enforcing the invariant.
@@ -146,7 +144,7 @@ public class Territory {
      * 
      * @return The Owner Agent of this Territory.
      */
-    public AbstractAgent getOwner(){
+    public BaseAgent getOwner(){
         return owner;
     }
     

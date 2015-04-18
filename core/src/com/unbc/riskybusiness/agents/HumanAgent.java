@@ -8,33 +8,15 @@ import com.unbc.riskybusiness.controllers.GameController;
  * 
  * @author Andrew J Toms II
  */
-public class HumanAgent extends AbstractAgent{
+public class HumanAgent extends BaseAgent{
 
-    @Override
-    public synchronized void startReinforcing(int reinforcments) {
-        isReinforcing = true;
-        reinforcementsToPlace = reinforcments;
-    }
-
-    @Override
-    public synchronized void startAttacking() {
-        isAttacking = true;
-        // The isAttacking flag will be set to false via the UI
-    }
-
-    @Override
-    public synchronized void startMoving() {
-        isMoving = true;
-        // The isMoving flag will be set to false via the UI.
-    }
-    
     public synchronized void setReinforcements(int reinforcements) {
         this.reinforcementsToPlace = reinforcements;
     }
     
     @Override
     public String toString() {
-        return "Human";
+        return "Human"+myId;
     }
     
 }

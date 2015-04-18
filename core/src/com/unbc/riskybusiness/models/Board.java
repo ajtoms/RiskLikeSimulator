@@ -1,7 +1,6 @@
 package com.unbc.riskybusiness.models;
 
-import com.unbc.riskybusiness.agents.AbstractAgent;
-import com.unbc.riskybusiness.agents.Agent;
+import com.unbc.riskybusiness.agents.BaseAgent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -122,7 +121,7 @@ public class Board {
      * @param a The Agent to get the list of Territories from.
      * @return The List of Territories belonging to a given Agent.
      */
-    public List<Territory> getAgentsTerritories(AbstractAgent a){
+    public List<Territory> getAgentsTerritories(BaseAgent a){
         List<Territory> ret = new ArrayList<Territory>();
         for (int x = 0; x < 4; x++) {
             for (int y = 0; y < 4; y++) {
@@ -155,7 +154,7 @@ public class Board {
      * @param a THe player in question.
      * @return The reinforcement bonus they get for owning a continent.
      */
-    public int continentBonusFor(AbstractAgent a){
+    public int continentBonusFor(BaseAgent a){
         int ret = 0;
         boolean ownsA = territories[0][0].getOwner().equals(a) && 
                 territories[1][0].getOwner().equals(a) &&
@@ -233,5 +232,9 @@ public class Board {
         if (t1 == null || t2 == null)
             return false;
         return adjacencies.get(t1).contains(t2);
+    }
+    
+    public Territory[][] getTerritories() {
+        return territories;
     }
 }
