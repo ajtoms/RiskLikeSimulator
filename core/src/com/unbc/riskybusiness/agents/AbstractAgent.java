@@ -5,6 +5,10 @@
  */
 package com.unbc.riskybusiness.agents;
 
+import com.unbc.riskybusiness.controllers.GameController;
+import com.unbc.riskybusiness.models.Force;
+import com.unbc.riskybusiness.models.Territory;
+
 /**
  *
  * @author leefoster
@@ -18,6 +22,17 @@ public abstract class AbstractAgent {
     protected boolean isMoving;
     protected boolean isDead;
     protected int reinforcementsToPlace;
+    protected GameController gameController;
+    
+    // Used by GUI to show what territory this agent is dealing with
+    protected Territory selectedTerritory;
+    
+    // Used by GUI to show how many forces the adgent is moving or attacking
+    protected Force pendingForce;
+    
+    public void setGameController(GameController gameController) {
+        this.gameController = gameController;
+    }
     
     public synchronized boolean isTakingTurn() {
         return takingTurn;
@@ -28,6 +43,8 @@ public abstract class AbstractAgent {
     }
     
     public synchronized void setDoneReinforcing() {
+        pendingForce = null;
+        selectedTerritory = null;
         isReinforcing = false;
     }
     
@@ -36,6 +53,8 @@ public abstract class AbstractAgent {
     }
     
     public synchronized void setDoneAttacking() {
+        pendingForce = null;
+        selectedTerritory = null;
         isAttacking = false;
     }
     
@@ -44,10 +63,14 @@ public abstract class AbstractAgent {
     }
     
     public synchronized void setDoneMoving() {
+        pendingForce = null;
+        selectedTerritory = null;
         isMoving = false;
     }
     
     public synchronized boolean isDoneTakingTurn() {
+        pendingForce = null;
+        selectedTerritory = null;
         return finishedTurn;
     }
     
@@ -73,6 +96,35 @@ public abstract class AbstractAgent {
         isReinforcing = false;
         isAttacking = false;
         isMoving = false;
+    }
+    
+    public int getReinforcements() {
+        return reinforcementsToPlace;
+    }
+            
+    public Territory getSelectedTerritory() {
+        return selectedTerritory;
+    }
+    
+    public void setSelectedTerritory(Territory selectedTerritory) {
+        this.selectedTerritory = selectedTerritory;
+    }
+    
+    public Force getPendingForce() {
+        return pendingForce;
+    }
+    
+    public void setPendingForce(Force f) {
+        pendingForce = f;
+    }
+    
+    public void sleep() {
+        try {
+            Thread.sleep(gameController.aiDelaySeconds * 1000);
+        }
+        catch (Exception e) {
+
+        }
     }
     
     public abstract void startReinforcing(int reinforcments);

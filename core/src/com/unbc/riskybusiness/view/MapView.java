@@ -28,6 +28,7 @@ public class MapView {
     private TiledMap tiledMap;
     private OrthographicCamera camera;
     private OrthogonalTiledMapRenderer renderer;
+    private Territory currentSelected; 
     
     public MapView(SpriteBatch batch) {
         tiledMap = RiskLikeGame.getMap();
@@ -79,7 +80,7 @@ public class MapView {
         if (selectedTerritory == null) {
             return;
         }
-
+        currentSelected = selectedTerritory;
         Rectangle tileRect = RiskLikeGame.getTileLocation(selectedTerritory.getLocationName());
         Vector2 rectCenter = new Vector2();
         tileRect.getCenter(rectCenter);
@@ -108,6 +109,7 @@ public class MapView {
     public void deselectTerritory(Territory t) {
         if (t == null)
             return;
+        currentSelected = null;
         Rectangle tileRect = RiskLikeGame.getTileLocation(t.getLocationName());
         Vector2 rectCenter = new Vector2();
         tileRect.getCenter(rectCenter);
@@ -130,5 +132,9 @@ public class MapView {
         TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
         cell.setTile(selectedTile);
         RiskLikeGame.getPointLayer().setCell((int) mapCoords.x, (int) mapCoords.y, cell);
+    }
+    
+    public Territory getSelectedTerritory() {
+        return currentSelected;
     }
 }

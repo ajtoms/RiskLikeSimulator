@@ -25,7 +25,6 @@ import com.unbc.riskybusiness.agents.HumanAgent;
 import com.unbc.riskybusiness.controllers.GameController;
 import com.unbc.riskybusiness.models.Force;
 import com.unbc.riskybusiness.models.Territory;
-import java.util.ArrayList;
 
 /**
  *
@@ -47,9 +46,6 @@ public class PlayerView implements InputProcessor{
     private Label unitsLabel;
     private Label doneLabel;
     private Button doneStateButton;
-
-    private Territory selectedTerritory;
-    private Force pendingForce;
     
     public PlayerView(COLOR color, AbstractAgent playerAgent, Stage stage, MapView mapView, GameController g) {
         this.color = color;
@@ -117,11 +113,13 @@ public class PlayerView implements InputProcessor{
         int percentControlled = g.getPercentControlled(playerAgent); 
         percentControlledLabel.setText(percentControlled + "%");
         
+        // Dead
         if (playerAgent.isDead()) {
             uiWindow.setStyle(RiskLikeGame.getDeactiveWindowStyle(null));
             agentNameLabel.setStyle(RiskLikeGame.getUiSkin().get("default-big", LabelStyle.class));
             percentControlledLabel.setStyle(RiskLikeGame.getUiSkin().get("default", LabelStyle.class));
         }
+        // My turn
         else if (g.getAgentTakingTurn() == playerAgent) {
             uiWindow.setStyle(RiskLikeGame.getActiveWindowStyle(color));
             doneStateButton.setVisible(true);
@@ -129,32 +127,45 @@ public class PlayerView implements InputProcessor{
             stateLabel.setVisible(true);
             doneLabel.setVisible(true);
             unitsLabel.setVisible(true);
+            
+            // Selecting tiles for humans are handled by the click listener
+            if (humanAgent == null) {
+                doneStateButton.setVisible(false);
+                doneLabel.setVisible(false);
+                if (playerAgent.getSelectedTerritory() != mapView.getSelectedTerritory())
+                    mapView.deselectTerritory(mapView.getSelectedTerritory());
+                mapView.setSelectedTerritory(playerAgent.getSelectedTerritory());
+            }
+            
             Pixmap p = new Pixmap(Gdx.files.internal("Sprite/defaultCursor.png"));
             switch (g.getCurrentState()) {
                 case REINFORCING:
+                    if (humanAgent != null)
+                        mapView.deselectTerritory(mapView.getSelectedTerritory());
                     p = new Pixmap(Gdx.files.internal("Sprite/plusCursor.png"));
                     stateLabel.setText("Reinforcing:");
-                    unitsLabel.setText(humanAgent.getReinforcements() + " units");
+                    unitsLabel.setText(playerAgent.getReinforcements() + " units");
                     break;
                 case ATTACKING:
                     p = new Pixmap(Gdx.files.internal("Sprite/swordCursor.png"));
                     stateLabel.setText("Attacking:");
-                    if (pendingForce == null)
+                    if (playerAgent.getPendingForce() == null)
                         unitsLabel.setText("0 units");
                     else
-                        unitsLabel.setText(pendingForce.getTroops() + " units");
+                        unitsLabel.setText(playerAgent.getPendingForce().getTroops() + " units");
                     break;
                 case MOVING:
                     p = new Pixmap(Gdx.files.internal("Sprite/gauntletCursor.png"));
                     stateLabel.setText("Moving:");
-                    if (pendingForce == null)
+                    if (playerAgent.getPendingForce() == null)
                         unitsLabel.setText("0 units");
                     else
-                        unitsLabel.setText(pendingForce.getTroops() + " units");
+                        unitsLabel.setText(playerAgent.getPendingForce().getTroops() + " units");
                     break;
             }
             Gdx.input.setCursorImage(p, 0, 0);
         }
+        // Not my turn
         else {
             uiWindow.setStyle(RiskLikeGame.getDeactiveWindowStyle(color));
             doneStateButton.setVisible(false);
@@ -194,9 +205,9 @@ public class PlayerView implements InputProcessor{
     // Only enabled on this players turn and if it is human.  Called when
     // the check box is clicked.
     public void setNextPlayerState() {
-        mapView.deselectTerritory(selectedTerritory);
-        selectedTerritory = null;
-        pendingForce = null;
+        mapView.deselectTerritory(playerAgent.getSelectedTerritory());
+        playerAgent.setSelectedTerritory(null);
+        playerAgent.setPendingForce(null);
         switch (g.getCurrentState()) {
             case REINFORCING:
                 playerAgent.setDoneReinforcing();
@@ -232,7 +243,7 @@ public class PlayerView implements InputProcessor{
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        if (g.getAgentTakingTurn() == playerAgent) {
+        if (g.getAgentTakingTurn() == playerAgent && humanAgent != null) {
             Vector3 screenCords = new Vector3(screenX, screenY, 0);
             mapView.getCamera().unproject(screenCords);
             Vector2 cameraCoords = new Vector2(screenCords.x, screenCords.y);
@@ -254,35 +265,35 @@ public class PlayerView implements InputProcessor{
                     case ATTACKING:
                         // First time selecting one of my territories
                         if (t.getOwner() == playerAgent 
-                                && selectedTerritory == null
+                                && playerAgent.getSelectedTerritory() == null
                                 && t.getNumTroops() > 1) {
-                            selectedTerritory = t;
-                            mapView.setSelectedTerritory(selectedTerritory);
-                            pendingForce = new Force(playerAgent, 0);
+                            playerAgent.setSelectedTerritory(t);
+                            mapView.setSelectedTerritory(t);
+                            playerAgent.setPendingForce(new Force(playerAgent, 0));
                             if (t.getNumTroops() > 1)
-                                pendingForce.incrementTroops();
+                                playerAgent.getPendingForce().incrementTroops();
                         }
                         // Selecting my territory to choose more troops
-                        else if (t == selectedTerritory) {
-                            if (selectedTerritory.getNumTroops() > 1
-                                    && pendingForce.getTroops() != selectedTerritory.getNumTroops()-1)
-                                pendingForce.incrementTroops();
+                        else if (t == playerAgent.getSelectedTerritory()) {
+                            if (playerAgent.getSelectedTerritory().getNumTroops() > 1
+                                    && playerAgent.getPendingForce().getTroops() != playerAgent.getSelectedTerritory().getNumTroops()-1)
+                                playerAgent.getPendingForce().incrementTroops();
                         }
                         // Selecting nonadjacent territory
-                        else if (g.getBoard().isAdjacentTo(selectedTerritory, t) == false) {
-                            mapView.deselectTerritory(selectedTerritory);
-                            selectedTerritory = null;
-                            pendingForce = null;
+                        else if (g.getBoard().isAdjacentTo(playerAgent.getSelectedTerritory(), t) == false) {
+                            mapView.deselectTerritory(playerAgent.getSelectedTerritory());
+                            playerAgent.setSelectedTerritory(null);
+                            playerAgent.setPendingForce(null);
                         }
                         // Selecting adjacent enemy territory to attack
-                        else if (g.getBoard().isAdjacentTo(selectedTerritory, t)
+                        else if (g.getBoard().isAdjacentTo(playerAgent.getSelectedTerritory(), t)
                                 && t.getOwner() != playerAgent
-                                && pendingForce != null
-                                && pendingForce.getTroops() >= 1) {
-                            int attackingForceTroops = pendingForce.getTroops();
+                                && playerAgent.getPendingForce() != null
+                                && playerAgent.getPendingForce().getTroops() >= 1) {
+                            int attackingForceTroops = playerAgent.getPendingForce().getTroops();
                             Force enemyForce = new Force(t.getOwner(), t.getNumTroops());
-                            Force resultingForce = pendingForce.attack(enemyForce);
-                            selectedTerritory.setTroops(selectedTerritory.getNumTroops() - attackingForceTroops);
+                            Force resultingForce = playerAgent.getPendingForce().attack(enemyForce);
+                            playerAgent.getSelectedTerritory().setTroops(playerAgent.getSelectedTerritory().getNumTroops() - attackingForceTroops);
                             // I won
                             if (resultingForce.getOwner() == playerAgent) {
                                 t.changeOwner(resultingForce);
@@ -291,53 +302,54 @@ public class PlayerView implements InputProcessor{
                             else {
                                 t.setTroops(enemyForce.getTroops());
                             }
-                            pendingForce = null;
-                            mapView.deselectTerritory(selectedTerritory);
-                            selectedTerritory = null;
+                            playerAgent.setPendingForce(null);
+                            mapView.deselectTerritory(playerAgent.getSelectedTerritory());
+                            playerAgent.setSelectedTerritory(null);
                         }
                         break;
                     case MOVING:
                         // First time selecting one of my territories
                         if (t.getOwner() == playerAgent 
-                                && selectedTerritory == null
+                                && playerAgent.getSelectedTerritory() == null
                                 && t.getNumTroops() > 1) {
-                            selectedTerritory = t;
-                            mapView.setSelectedTerritory(selectedTerritory);
-                            pendingForce = new Force(playerAgent, 0);
+                            playerAgent.setSelectedTerritory(t);
+                            mapView.setSelectedTerritory(playerAgent.getSelectedTerritory());
+                            playerAgent.setPendingForce(new Force(playerAgent, 0));
                             if (t.getNumTroops() > 1)
-                                pendingForce.incrementTroops();
+                                playerAgent.getPendingForce().incrementTroops();
                         }
                         // Selecting my territory to choose more troops
-                        else if (t == selectedTerritory) {
-                            if (selectedTerritory.getNumTroops() > 1
-                                    && pendingForce.getTroops() != selectedTerritory.getNumTroops()-1)
-                                pendingForce.incrementTroops();
+                        else if (t == playerAgent.getSelectedTerritory()) {
+                            if (playerAgent.getSelectedTerritory().getNumTroops() > 1
+                                    && playerAgent.getPendingForce().getTroops() != playerAgent.getSelectedTerritory().getNumTroops()-1)
+                                playerAgent.getPendingForce().incrementTroops();
                         }
                         // Selecting nonadjacent territory
-                        else if (g.getBoard().isAdjacentTo(selectedTerritory, t) == false) {
-                            mapView.deselectTerritory(selectedTerritory);
-                            selectedTerritory = null;
-                            pendingForce = null;
+                        else if (g.getBoard().isAdjacentTo(playerAgent.getSelectedTerritory(), t) == false) {
+                            mapView.deselectTerritory(playerAgent.getSelectedTerritory());
+                            playerAgent.setSelectedTerritory(null);
+                            playerAgent.setPendingForce(null);
                         }
                         // Selecting adjacent territory to move to
-                        else if (g.getBoard().isAdjacentTo(selectedTerritory, t)
+                        else if (g.getBoard().isAdjacentTo(playerAgent.getSelectedTerritory(), t)
                                 && t.getOwner() == playerAgent
-                                && pendingForce != null
-                                && pendingForce.getTroops() >= 1) {
-                            t.reinforce(pendingForce.getTroops());
-                            int attackingForceTroops = pendingForce.getTroops();
-                            selectedTerritory.setTroops(selectedTerritory.getNumTroops() - pendingForce.getTroops());
-                            pendingForce = null;
-                            mapView.deselectTerritory(selectedTerritory);
-                            selectedTerritory = null;
+                                && playerAgent.getPendingForce() != null
+                                && playerAgent.getPendingForce().getTroops() >= 1) {
+                            t.reinforce(playerAgent.getPendingForce().getTroops());
+                            playerAgent.getSelectedTerritory().setTroops(playerAgent.getSelectedTerritory().getNumTroops() 
+                                    - playerAgent.getPendingForce().getTroops());
+                            playerAgent.setPendingForce(null);
+                            mapView.deselectTerritory(playerAgent.getSelectedTerritory());
+                            playerAgent.setSelectedTerritory(null);
+                            setNextPlayerState();
                         }
                         break;
                 }
             }
-            else if (tileName == null || g.getBoard().isAdjacentTo(selectedTerritory, t) == false) {
-                mapView.deselectTerritory(selectedTerritory);
-                selectedTerritory = null;
-                pendingForce = null;
+            else if (tileName == null || g.getBoard().isAdjacentTo(playerAgent.getSelectedTerritory(), t) == false) {
+                mapView.deselectTerritory(playerAgent.getSelectedTerritory());
+                playerAgent.setSelectedTerritory(null);
+                playerAgent.setPendingForce(null);
             }
             return true;
         }

@@ -28,6 +28,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.FocusListener;
 import com.unbc.riskybusiness.agents.AbstractAgent;
 import com.unbc.riskybusiness.agents.HumanAgent;
+import com.unbc.riskybusiness.agents.RandomAgent;
 import com.unbc.riskybusiness.controllers.GameController;
 import com.unbc.riskybusiness.main.Logger;
 
@@ -505,11 +506,12 @@ public class SetupScreen extends ScreenAdapter {
     
     private void startSimulation() {
         Logger.startLog();
-        AbstractAgent a1 = getAgent(redAgentSelect.getSelected());
-        AbstractAgent a2 = (greenCheckBox.isChecked()) ? getAgent(greenAgentSelect.getSelected()):null;
-        AbstractAgent a3 = (yellowCheckBox.isChecked()) ? getAgent(yellowAgentSelect.getSelected()):null;
-        AbstractAgent a4 = getAgent(blueAgentSelect.getSelected());
-        GameController g = new GameController(a1, a2, a3, a4);
+        AbstractAgent blueAgent = getAgent(blueAgentSelect.getSelected());
+        AbstractAgent redAgent = getAgent(redAgentSelect.getSelected());
+        AbstractAgent greenAgent = (greenCheckBox.isChecked()) ? getAgent(greenAgentSelect.getSelected()):null;
+        AbstractAgent yellowAgent = (yellowCheckBox.isChecked()) ? getAgent(yellowAgentSelect.getSelected()):null;
+        
+        GameController g = new GameController(blueAgent, redAgent, greenAgent, yellowAgent);
         g.setContinentBonuses(Integer.parseInt(continentAField.getText()), 
                 Integer.parseInt(continentBField.getText()), 
                 Integer.parseInt(continentCField.getText()), 
@@ -529,13 +531,12 @@ public class SetupScreen extends ScreenAdapter {
     }
 
     private AbstractAgent getAgent(String agentName) {
-        return new HumanAgent();
-//        if (agentName.equals("Human"))
-//            return new HumanAgent();
-//        if (agentName.equals("Random"))
-//            return new RandomAgent();
-//        
-//        return null;
+        if (agentName.equals("Human"))
+            return new HumanAgent();
+        if (agentName.equals("Random"))
+            return new RandomAgent();
+        
+        return null;
     }
 
 }

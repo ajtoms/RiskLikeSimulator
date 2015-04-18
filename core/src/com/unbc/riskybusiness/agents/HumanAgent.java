@@ -10,12 +10,10 @@ import com.unbc.riskybusiness.controllers.GameController;
  */
 public class HumanAgent extends AbstractAgent{
 
-    private int reinforcments;
-    
     @Override
     public synchronized void startReinforcing(int reinforcments) {
         isReinforcing = true;
-        this.reinforcments = reinforcments;
+        reinforcementsToPlace = reinforcments;
     }
 
     @Override
@@ -30,12 +28,8 @@ public class HumanAgent extends AbstractAgent{
         // The isMoving flag will be set to false via the UI.
     }
     
-    public synchronized int getReinforcements() {
-        return reinforcments;
-    }
-    
     public synchronized void setReinforcements(int reinforcements) {
-        this.reinforcments = reinforcements;
+        this.reinforcementsToPlace = reinforcements;
     }
     
     @Override

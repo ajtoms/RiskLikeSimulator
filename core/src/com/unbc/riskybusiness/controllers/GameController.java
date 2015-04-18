@@ -78,6 +78,8 @@ public class GameController {
      * @return The Agent that won this game.
      */
     public AbstractAgent play(){
+        for (AbstractAgent a : players)
+            a.setGameController(this);
         currentState = STATE.SET_NEXT_PLAYER;
         while(currentState != STATE.DONE_GAME){
             setDeadAgents();
