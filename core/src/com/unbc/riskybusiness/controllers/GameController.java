@@ -148,8 +148,8 @@ public class GameController {
     
     // Checks to see if any agents are dead and sets their isDead flag
     private void setDeadAgents() {
-        for (Agent player : players) {
-            if (board.getAgentsTerritories(player).isEmpty()) {
+        for (Agent player : players) {                        // \/Don't flog a dead horse.
+            if (board.getAgentsTerritories(player).isEmpty() && !player.isDead()) { 
                 logger.logAction(String.format("%s has died.", player));
                 player.setDead();
             }
