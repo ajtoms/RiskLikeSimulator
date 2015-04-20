@@ -1,6 +1,6 @@
 package com.unbc.riskybusiness.controllers;
 
-import com.unbc.riskybusiness.agents.BaseAgent;
+import com.unbc.riskybusiness.agents.Agent;
 import java.util.HashMap;
 
 /**
@@ -14,10 +14,10 @@ import java.util.HashMap;
  */
 public class Simulation {
 
-    public Simulation(BaseAgent a, BaseAgent b, BaseAgent c, BaseAgent d, int numGames){
+    public Simulation(Agent a, Agent b, Agent c, Agent d, int numGames){
         
         //Use a HashMap as a scoreboard
-        HashMap<BaseAgent, Integer> results = new HashMap<BaseAgent, Integer>();
+        HashMap<Agent, Integer> results = new HashMap<Agent, Integer>();
         results.put(a, 0);
         results.put(b, 0);
         results.put(c, 0);

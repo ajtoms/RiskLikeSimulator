@@ -1,6 +1,6 @@
 package com.unbc.riskybusiness.models;
 
-import com.unbc.riskybusiness.agents.BaseAgent;
+import com.unbc.riskybusiness.agents.Agent;
 import com.unbc.riskybusiness.main.DiceRoller;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,7 +16,7 @@ import java.util.Collections;
  */
 public class Force {
 
-    private BaseAgent owner;
+    private Agent owner;
     private int myTroops;
     
     /**
@@ -25,7 +25,7 @@ public class Force {
      * @param owner The Agent who is commanding the force.
      * @param troops The number of troops that make up the force.
      */
-    public Force(BaseAgent owner, int troops){
+    public Force(Agent owner, int troops){
         this.owner = owner;
         this.myTroops = troops;
     }
@@ -87,7 +87,7 @@ public class Force {
         return this.myTroops;
     }
     
-    public BaseAgent getOwner(){
+    public Agent getOwner(){
         return this.owner;
     }
     

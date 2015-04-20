@@ -1,4 +1,4 @@
-
+package com.unbc.riskybusiness.main;
 
 /**
  * Just your friendly neighborhood Main class, it launches the project by initializing and running a

@@ -1,6 +1,6 @@
 package com.unbc.riskybusiness.controllers;
 
-import com.unbc.riskybusiness.agents.BaseAgent;
+import com.unbc.riskybusiness.agents.Agent;
 import com.unbc.riskybusiness.main.Logger;
 import com.unbc.riskybusiness.models.Board;
 import com.unbc.riskybusiness.models.Territory;
@@ -20,11 +20,12 @@ public class GameController {
     public enum STATE {SET_NEXT_PLAYER, REINFORCING, ATTACKING, MOVING, DONE_GAME};
     
     private int playerIndex;    //The integer index of the current player.
-    private BaseAgent[] players;
-    private BaseAgent currentPlayer;
+    private Agent[] players;
+    private Agent currentPlayer;
     private int[] territoriesOwned;
     private Board board;
     private STATE currentState;
+    private Logger logger;
     /* Game Settings Default Values */
     public int percentToWin = 100;
     public int unitsPerTurn = 5;
@@ -39,8 +40,8 @@ public class GameController {
      * @param player3
      * @param player4
      */
-    public GameController(BaseAgent player1, BaseAgent player2, BaseAgent player3, BaseAgent player4){
-        ArrayList<BaseAgent> notNullAgents = new ArrayList<BaseAgent>();
+    public GameController(Agent player1, Agent player2, Agent player3, Agent player4, Logger l){
+        ArrayList<Agent> notNullAgents = new ArrayList<Agent>();
         if (player1 != null)
             notNullAgents.add(player1);
         if (player2 != null)
@@ -51,7 +52,7 @@ public class GameController {
             notNullAgents.add(player4);
         
         playerIndex = 0;
-        players = (BaseAgent[]) notNullAgents.toArray(new BaseAgent[notNullAgents.size()]);
+        players = (Agent[]) notNullAgents.toArray(new Agent[notNullAgents.size()]);
         board = new Board();
         
         if (players.length == 4)
@@ -83,9 +84,12 @@ public class GameController {
      * 
      * @return The Agent that won this game.
      */
-    public BaseAgent play(){
-        for (BaseAgent a : players)
+    public Agent play(){
+        
+        //Passes the Game Controller instance to the players
+        for (Agent a : players)
             a.setGameController(this);
+        
         currentState = STATE.SET_NEXT_PLAYER;
         while(currentState != STATE.DONE_GAME){
             setDeadAgents();
@@ -101,25 +105,31 @@ public class GameController {
                         break;
                     }
 
+                    logger.logAction(String.format("%s begins their turn.", currentPlayer));
                     currentPlayer.setTakingTurn();
                     currentState = STATE.REINFORCING;
-                    currentPlayer.startReinforcing(unitsPerTurn + board.continentBonusFor(currentPlayer));
+                    int numReinforcements = unitsPerTurn + board.continentBonusFor(currentPlayer);
+                    logger.logAction(String.format("%s gets %d reinforcements.", currentPlayer, numReinforcements));
+                    currentPlayer.startReinforcing(numReinforcements);
                     break;
                 case REINFORCING:
                     if (!currentPlayer.isReinforcing()) {
                         currentState = STATE.ATTACKING;
+                        logger.logAction(String.format("%s will now attack.", currentPlayer));
                         currentPlayer.startAttacking();
                     }
                     break;
                 case ATTACKING:
                     if (!currentPlayer.isAttacking()) {
                         currentState = STATE.MOVING;
+                        logger.logAction(String.format("%s is done attacking and makes a tactical move.", currentPlayer));
                         currentPlayer.startMoving();
                     }
                     break;
                 case MOVING:
                     if (!currentPlayer.isMoving()) {
                         currentState = STATE.SET_NEXT_PLAYER;
+                        logger.logAction(String.format("%s is done their turn", currentPlayer));
                         currentPlayer.doneTurn();
                         playerIndex++;
                     }
@@ -128,16 +138,16 @@ public class GameController {
         }
         
         //The winner is the owner of all territories.
-        BaseAgent victor = board.getTerritory(0, 0).getOwner();
-        Logger.log(String.format("The winner is %s", victor));
-        Logger.logVictory(victor);
+        Agent victor = board.getTerritory(0, 0).getOwner();
+        logger.logAction(String.format("%s wins", victor.toString()));
         return victor;
     }
     
     // Checks to see if any agents are dead and sets their isDead flag
     private void setDeadAgents() {
-        for (BaseAgent player : players) {
+        for (Agent player : players) {
             if (board.getAgentsTerritories(player).isEmpty()) {
+                logger.logAction(String.format("%s has died.", player));
                 player.setDead();
             }
         }
@@ -159,7 +169,7 @@ public class GameController {
      * @return True if the game is over, else false.
      */
     public boolean isOver(){
-        for (BaseAgent a: players) {
+        for (Agent a: players) {
             if (getPercentControlled(a) >= percentToWin)
                 return true;
         }
@@ -167,7 +177,7 @@ public class GameController {
 
     }
     
-    public void logChanges(BaseAgent active){
+    public void logChanges(Agent active){
         //Precondition, we know an attack just happened. Find out what went down.
         if(board.getAgentsTerritories(active).size() > territoriesOwned[playerIndex % players.length]){
             
@@ -175,7 +185,7 @@ public class GameController {
             territoriesOwned[playerIndex % players.length] += 1;
             
             //In this block we are guaranteed that a territory exchanged hands
-            BaseAgent loser = null;
+            Agent loser = null;
             List<Territory> loserLands = null;
             for(int i = 0; i < players.length && loser == null; i++){
                 //By virtue of the fact that this player is the winner we know it isn't the loser.
@@ -183,7 +193,7 @@ public class GameController {
                     continue;
                 
                 //The loser will have one less territory than we remembered.
-                BaseAgent a = players[i];
+                Agent a = players[i];
                 List<Territory> aLands = board.getAgentsTerritories(a);
                 if(aLands.size() < territoriesOwned[i]){
                     loser = a;
@@ -196,14 +206,14 @@ public class GameController {
             if(loserLands.isEmpty()){
                 String report = String.format("%s lost its last territory to %s. %s is out.", 
                         loser, active, loser);
-                Logger.log(report);
+                logger.logAction(report);
             } else {
                 String report = String.format("%s lost a territory to %s.", loser, active);
-                Logger.log(report);
+                logger.logAction(report);
             }
         } else {    //In the else clause, the active player lost a skirmish
             String r = String.format("%s failed to capture a territory with its attack.", active);
-                Logger.log(r);
+                logger.logAction(r);
         }
     }
     
@@ -214,7 +224,7 @@ public class GameController {
         board.setContinentDBonus(d);
     }
     
-    public int getPercentControlled (BaseAgent a) {
+    public int getPercentControlled (Agent a) {
         float percentControlled = 0;
         List<Territory> controlledTerritories = board.getAgentsTerritories(a);
         List<Territory> allTerritories = board.getAllTerritories();
@@ -222,7 +232,7 @@ public class GameController {
         return (int) percentControlled;
     }
     
-    public BaseAgent[] getPlayers() {
+    public Agent[] getPlayers() {
         return players;
     }
     
@@ -262,23 +272,23 @@ public class GameController {
         }
     }
     
-    public BaseAgent getPlayer1() {
+    public Agent getPlayer1() {
         return hasPlayer1() ? players[0] : null;
     }
     
-    public BaseAgent getPlayer2() {
+    public Agent getPlayer2() {
         return hasPlayer2() ? players[1] : null;
     }
     
-    public BaseAgent getPlayer3() {
+    public Agent getPlayer3() {
         return hasPlayer3() ? players[2] : null;
     }
     
-    public BaseAgent getPlayer4() {
+    public Agent getPlayer4() {
         return hasPlayer4() ? players[3] : null;
     }
     
-    public BaseAgent getAgentTakingTurn() {
+    public Agent getAgentTakingTurn() {
         return currentPlayer;
     }
     
@@ -286,9 +296,9 @@ public class GameController {
         return currentState;
     }
     
-    public BaseAgent getWinner() {
+    public Agent getWinner() {
         if (isOver()) {
-            for (BaseAgent a: players) {
+            for (Agent a: players) {
                 if (getPercentControlled(a) >= percentToWin)
                     return a;
             }

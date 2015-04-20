@@ -6,6 +6,7 @@
  */
 package com.unbc.riskybusiness.agents;
 
+import com.unbc.riskybusiness.main.Logger;
 import com.unbc.riskybusiness.models.Force;
 import com.unbc.riskybusiness.models.Territory;
 import java.util.ArrayList;
@@ -16,8 +17,8 @@ import java.util.Random;
  *
  * @author leefoster
  */
-public class RandomAgent extends BaseAgent {
-
+public class RandomAgent extends Agent {
+    
     @Override
     public void startReinforcing(int reinforcments) {
         super.startReinforcing(reinforcments);
@@ -102,7 +103,7 @@ public class RandomAgent extends BaseAgent {
         return enemyTerritories;
     }
     
-        private synchronized List<Territory> getAdjacentOwnedTerritories(Territory terriroty) {
+    private synchronized List<Territory> getAdjacentOwnedTerritories(Territory terriroty) {
         List<Territory> adjacent = gameController.getBoard().getAdjacentTerritories(terriroty);
         List<Territory> ownedByMe = new ArrayList<Territory>();
         for (int i = 0; i < adjacent.size(); i++) {
