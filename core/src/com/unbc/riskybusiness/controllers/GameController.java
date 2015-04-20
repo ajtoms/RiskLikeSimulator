@@ -41,6 +41,9 @@ public class GameController {
      * @param player4
      */
     public GameController(Agent player1, Agent player2, Agent player3, Agent player4, Logger l){
+        
+        this.logger = l;
+        
         ArrayList<Agent> notNullAgents = new ArrayList<Agent>();
         if (player1 != null)
             notNullAgents.add(player1);
