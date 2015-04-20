@@ -89,6 +89,12 @@ public abstract class Agent {
     
     public void setGameController(GameController gameController) {
         this.gameController = gameController;
+        takingTurn = false;
+        finishedTurn = false;
+        isReinforcing = false;
+        isAttacking = false;
+        isMoving = false;
+        isDead = false;
     }
     
     public void setTakingTurn() {

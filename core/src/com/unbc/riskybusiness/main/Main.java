@@ -1,5 +1,6 @@
 package com.unbc.riskybusiness.main;
 
+import com.unbc.riskybusiness.agents.MarkovInformedAgent50;
 import com.unbc.riskybusiness.agents.TypicalAgent;
 import com.unbc.riskybusiness.controllers.Simulation;
 
@@ -21,7 +22,7 @@ public class Main {
         TypicalAgent ta = new TypicalAgent();
         TypicalAgent tb = new TypicalAgent();
         TypicalAgent tc = new TypicalAgent();
-        TypicalAgent td = new TypicalAgent();
+        MarkovInformedAgent50 td = new MarkovInformedAgent50();
         Simulation s = new Simulation(ta,tb,tc,td,10000);
         
     }
